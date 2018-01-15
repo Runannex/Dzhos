@@ -3,8 +3,12 @@ package com.example.admin.runannex;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
@@ -37,6 +41,9 @@ import android.widget.EditText;
 public class MainActivity extends AppCompatActivity {
     private static final int PICK_IMAGE = 100;
     private ImageView imageView;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +80,13 @@ public class MainActivity extends AppCompatActivity {
             Uri imageUri = data.getData();
             imageView.setImageURI(imageUri);
         }
+
+
     }
-}
+
+        }
+
+
 
 
 
