@@ -1,0 +1,4 @@
+#Sat Feb 03 13:20:32 EET 2018
+base.0=C\:\\Users\\Admin\\Desktop\\Runannex\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
+path.0=classes.dex
+renamed.0=classes.dex

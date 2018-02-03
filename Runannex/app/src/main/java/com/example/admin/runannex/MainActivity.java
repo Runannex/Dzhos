@@ -2,23 +2,29 @@ package com.example.admin.runannex;
 
 import android.Manifest;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Bundle;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.provider.MediaStore;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,10 +38,11 @@ public class MainActivity extends AppCompatActivity {
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
-       
                 sPref = getApplicationContext().getSharedPreferences("Data", MODE_PRIVATE);
                 ed = sPref.edit();
+
                 if (sPref.getBoolean("firstrun", true)) {
+
 
                     final EditText weight = (EditText) findViewById(R.id.weight);
                     final EditText year = (EditText) findViewById(R.id.year);
@@ -44,42 +51,67 @@ public class MainActivity extends AppCompatActivity {
                     final Button next = (Button) findViewById(R.id.next);
                     final TextView error = (TextView) findViewById(R.id.error);
                     name.requestFocus();
+                    getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+                    getSupportActionBar().setCustomView(R.layout.abs_layout);
                     error.setVisibility(View.INVISIBLE);
                     View.OnClickListener oclBtnOk = new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            String Weight = weight.getText().toString();
-                            String Name = name.getText().toString();
-                            String Growth = growth.getText().toString();
-                            String Year = year.getText().toString();
-                            if ((Weight.length() == 0) || (Name.trim().length() == 0) || (Growth.trim().length() == 0) || (Year.trim().length() == 0)) {
-                                error.setVisibility(View.VISIBLE);
+                            int REQUEST_WRITE_STORAGE = 112;
+                            boolean hasPermission = (ContextCompat.checkSelfPermission(MainActivity.this,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+                            if (!hasPermission) {
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        REQUEST_WRITE_STORAGE);
                             } else {
-                                error.setVisibility(View.INVISIBLE);
-
-                                if (Year.charAt(0) != '-' && Weight.charAt(0) != '-' && Growth.charAt(0) != '-' && Year.charAt(0) != '0' && Weight.charAt(0) != '0' && Growth.charAt(0) != '0') {
-                                    error.setVisibility(View.INVISIBLE);
-                                    ed.putString("yea", Year);
-                                    ed.putString("growt", Growth);
-                                    ed.putString("weigh", Weight);
-                                    ed.putString("nam", Name);
-                                    ed.commit();
-                                     myIntent = new Intent(v.getContext(), Training.class);
-                                    startActivity(myIntent);
-                                    sPref.edit().putBoolean("firstrun", false).commit();
-                                    closeActivity();
-
-
-                                } else {
-                                    error.setText("Неправильныо введены данные");
+                                String Weight = weight.getText().toString();
+                                String Name = name.getText().toString();
+                                String Growth = growth.getText().toString();
+                                String Year = year.getText().toString();
+                                if ((Weight.length() == 0) || (Name.trim().length() == 0) || (Growth.trim().length() == 0) || (Year.trim().length() == 0)) {
                                     error.setVisibility(View.VISIBLE);
+                                } else {
+                                    error.setVisibility(View.INVISIBLE);
+
+                                    if (Year.charAt(0) != '-' && Weight.charAt(0) != '-' && Growth.charAt(0) != '-' && Year.charAt(0) != '0' && Weight.charAt(0) != '0' && Growth.charAt(0) != '0') {
+                                        error.setVisibility(View.INVISIBLE);
+                                        ed.putString("yea", Year);
+                                        ed.putString("growt", Growth);
+                                        ed.putString("weigh", Weight);
+                                        ed.putString("nam", Name);
+                                        ed.commit();
+                                        myIntent = new Intent(v.getContext(), Training.class);
+                                        startActivity(myIntent);
+                                        sPref.edit().putBoolean("firstrun", false).commit();
+                                        try {
+
+                                            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+                                            File path = Environment.getExternalStorageDirectory();
+                                            File dir = new File(path + "/.Runannex/");
+                                            dir.mkdirs();
+                                            File file = new File(dir, "picture.png");
+                                            OutputStream out = null;
+                                            out = new FileOutputStream(file);
+                                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                            out.flush();
+                                            out.close();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                        closeActivity();
+
+
+                                    } else {
+                                        error.setText("Неправильныо введены данные");
+                                        error.setVisibility(View.VISIBLE);
+                                    }
+
+
                                 }
 
-
                             }
-
                         }
-
                     };
                     next.setOnClickListener(oclBtnOk);
                 } else {
@@ -95,15 +127,23 @@ public class MainActivity extends AppCompatActivity {
         pickImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openGallery();
+                int REQUEST_READ_STORAGE = 112;
+                boolean hasPermission = (ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+                if (!hasPermission) {
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_READ_STORAGE);
+                } else {
+                    openGallery();
+                }
             }
         });
     }
 
     private void openGallery() {
         Intent gallery =
-                new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, PICK_IMAGE);
     }
 
@@ -115,8 +155,6 @@ public class MainActivity extends AppCompatActivity {
             imageView.setImageURI(imageUri);
         }
     }
-
-
     private void closeActivity() {
 
         this.finish();
