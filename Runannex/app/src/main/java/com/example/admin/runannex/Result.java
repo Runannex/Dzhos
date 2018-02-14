@@ -3,15 +3,23 @@ package com.example.admin.runannex;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class Result extends AppCompatActivity {
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
+public class Result extends AppCompatActivity implements OnMapReadyCallback{
 
     SharedPreferences sPref;
     int Seconds, Minutes, MilliSeconds;
@@ -31,12 +39,21 @@ public class Result extends AppCompatActivity {
         Seconds = sPref.getInt("Sec",0);
         Minutes = sPref.getInt("Min",0);
         MilliSeconds = sPref.getInt("Millis",0);
-        timer.setText(String.format("%02d", Minutes) + ":"
-                + String.format("%02d", Seconds) + ":"
-                + String.format("%03d", MilliSeconds));
+        timer.setText(String.format("%02d", Minutes) + ":" + String.format("%02d", Seconds) + ":" + String.format("%03d", MilliSeconds));
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        Button okei = (Button) findViewById(R.id.okei);
+        okei.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
     }
+
+
 
     @Override
     public boolean onSupportNavigateUp(){
@@ -50,6 +67,15 @@ public class Result extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.getUiSettings().setAllGesturesEnabled(false);
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id){

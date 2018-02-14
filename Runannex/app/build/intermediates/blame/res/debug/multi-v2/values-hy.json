@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\alexa\\Desktop\\Ivanko\\Ivanko\\Runannex\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-hy\\values-hy.xml",
+            "outputFile": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-hy\\values-hy.xml",
             "map": [
                 {
                     "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-basement-11.8.0.aar\\f2abbd568abd1868d29f34b3fa68226d\\res\\values-hy\\values.xml",

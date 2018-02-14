@@ -1,10 +1,12 @@
 package com.example.admin.runannex;
 
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,20 +24,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
 import java.io.File;
 
 
 
-public class Training extends AppCompatActivity {
+public class Training extends AppCompatActivity implements OnMapReadyCallback {
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
-    String weight,year,growth,name;
-    ImageView imageView;
-    int Seconds, Minutes, MilliSeconds ;
+    String weight, year, growth, name;
+    int Seconds, Minutes, MilliSeconds;
     Handler handler;
-    Intent intent;
-    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L ;
+    Intent intent, intent2;
+    GoogleMap map;
+    long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     ImageButton music;
+    private final int SPORT_LIST = 1;
+    Boolean ifsport = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +58,6 @@ public class Training extends AppCompatActivity {
         name = sPref.getString("nam", "");
         growth = sPref.getString("growt", "");
         year = sPref.getString("yea", "");
-        imageView = (ImageView) findViewById(R.id.image_view);
         String path = Environment.getExternalStorageDirectory().getPath();
         File f = new File(path + "/.Runannex/picture.png");
         final Button start = (Button) findViewById(R.id.start);
@@ -58,8 +65,29 @@ public class Training extends AppCompatActivity {
         final Button stop = (Button) findViewById(R.id.stop);
         final Button cont = (Button) findViewById(R.id.cont);
         final TextView timer = (TextView) findViewById(R.id.timer);
+        final Button ButtonMap = (Button) findViewById(R.id.Bmap);
+        final ImageButton sport = (ImageButton) findViewById(R.id.sport);
+        sport.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+                showDialog(SPORT_LIST);
 
-        handler = new Handler() ;
+            }
+        });
+
+
+        handler = new Handler();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        View.OnClickListener oclBtnMap = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intent2 = new Intent(v.getContext(), Maps.class);
+                startActivity(intent2);
+            }
+        };
+        ButtonMap.setOnClickListener(oclBtnMap);
+
         music = (ImageButton) findViewById(R.id.music);
         music.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,40 +98,17 @@ public class Training extends AppCompatActivity {
                     startActivity(music);
 
                 }
-                else
-                {
+                else {
                     Intent music = new Intent(MediaStore.INTENT_ACTION_MUSIC_PLAYER);
 
-
-
-
-                    
                     startActivity(music);
-
-
                 }
-
-
             }
         });
 
-
-
-
         /* if(f.exists() && !f.isDirectory()) {
             imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
-        } else { imageView.setImageResource(R.drawable.ava);} */
-
-
-
-
-
-
-
-
-
-
-
+        } else { imageView.setImageResource(R.drawable.ava);}  */
 
 
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
@@ -122,25 +127,27 @@ public class Training extends AppCompatActivity {
         View.OnClickListener oclBtnStop = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                intent = new Intent(v.getContext(), Result.class);
+                startActivity(intent);
                 ed.putInt("Min", Minutes);
                 ed.putInt("Millis", MilliSeconds);
                 ed.putInt("Sec", Seconds);
                 ed.commit();
                 handler.removeCallbacks(runnable);
-                intent = new Intent(v.getContext(), Result.class);
-                startActivity(intent);
-                MillisecondTime = 0L ;
-                StartTime = 0L ;
-                TimeBuff = 0L ;
-                UpdateTime = 0L ;
-                Seconds = 0 ;
-                Minutes = 0 ;
-                MilliSeconds = 0 ;
-                timer.setText("00:00:000");
+                MillisecondTime = 0L;
+                StartTime = 0L;
+                TimeBuff = 0L;
+                UpdateTime = 0L;
+                Seconds = 0;
+                Minutes = 0;
+                MilliSeconds = 0;
                 stop.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.INVISIBLE);
                 cont.setVisibility(View.INVISIBLE);
                 start.setVisibility(View.VISIBLE);
+                timer.setText(String.format("%02d", Minutes) + ":"
+                        + String.format("%02d", Seconds) + ":"
+                        + String.format("%03d", MilliSeconds));
             }
         };
         stop.setOnClickListener(oclBtnStop);
@@ -170,16 +177,6 @@ public class Training extends AppCompatActivity {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     public Runnable runnable = new Runnable() {
 
         public void run() {
@@ -199,19 +196,19 @@ public class Training extends AppCompatActivity {
     };
 
 
-
-
-
-
-
-
-
-
-    public boolean onCreateOptionsMenu(Menu menu){
+    public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
+    public void onMapReady(final GoogleMap googleMap) {
+       map = googleMap;
+        map.getUiSettings().setAllGesturesEnabled(false);
+    }
+
+
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id){
@@ -226,14 +223,55 @@ public class Training extends AppCompatActivity {
                 try { startActivity(Intent.createChooser(i, "Выбирите почту..."));
                     Toast.makeText(Training.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
                 } catch (android.content.ActivityNotFoundException ex) { Toast.makeText(Training.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show(); }
-                //Toast.makeText(Training.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.info:
 
-                return true;
+                android.app.AlertDialog.Builder builder =
+                        new android.app.AlertDialog.Builder(this);
+                builder.setTitle("О приложении");
+                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setPositiveButton("OK", null);
+               // builder.setIcon(R.drawable.ic_launcher);
+
+                builder.show();
         }
         return super.onOptionsItemSelected(item);
 
     }
 
+
+
+    @Override
+   protected Dialog onCreateDialog(final int id) {
+        final ImageButton sport = (ImageButton) findViewById(R.id.sport);
+        {
+            switch (id) {
+                case SPORT_LIST:
+                    final String[] Sport = {"Бег", "Велосипед"};
+                    android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                    builder.setTitle("Выберите вид спорта");
+                    builder.setItems(Sport, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int item) {
+                            if (item == 0) {
+                                sport.setImageResource(R.drawable.sport_running);
+                            }
+                            if (item == 1) {
+                                sport.setImageResource(R.drawable.sport_cycling);
+                            }
+
+                            Toast.makeText(getApplicationContext(), "Выбранный спорт " + Sport[item], Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    });
+                    builder.setCancelable(true);
+                    return builder.create();
+
+                default:
+                    return null;
+
+            }
+        }
+    }
 }
