@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -225,13 +226,25 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback {
                 } catch (android.content.ActivityNotFoundException ex) { Toast.makeText(Training.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show(); }
                 return true;
             case R.id.info:
-
                 android.app.AlertDialog.Builder builder =
                         new android.app.AlertDialog.Builder(this);
                 builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setMessage("slavafeatzhdos@gmail.com");
                 builder.setPositiveButton("OK", null);
-               // builder.setIcon(R.drawable.ic_launcher);
+                builder.setNegativeButton("Написать на почту",  new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(Intent.ACTION_SEND); i.setType("text/plain");
+                        i.putExtra(Intent.EXTRA_EMAIL, new String[] {"slavafeatzhdos@gmail.com"});
+                        i.putExtra(Intent.EXTRA_SUBJECT, "Ошибки");
+                        i.putExtra(Intent.EXTRA_TEXT,  "" );
+                        try { startActivity(Intent.createChooser(i, "Выбирите почту..."));
+                            Toast.makeText(Training.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
+                        } catch (android.content.ActivityNotFoundException ex) { Toast.makeText(Training.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show(); }
+
+                    }
+                });
+                builder.setIcon(R.drawable.ic_launcher);
+
 
                 builder.show();
         }
