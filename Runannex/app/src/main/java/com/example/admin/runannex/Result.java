@@ -3,15 +3,11 @@ package com.example.admin.runannex;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
-import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,23 +39,9 @@ public class Result extends AppCompatActivity implements OnMapReadyCallback{
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        Button okei = (Button) findViewById(R.id.okei);
-        okei.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
     }
 
-
-
-    @Override
-    public boolean onSupportNavigateUp(){
-        finish();
-        return true;
-    }
 
 
     public boolean onCreateOptionsMenu(Menu menu){

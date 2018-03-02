@@ -7,7 +7,7 @@
     <color name="list_background_pressed">#ccc</color>
     <color name="drawer_item_color">#fff</color>
     <color name="list_divider">#5e5e5e</color>
-    <color name="dialog_background">#5fa3d0</color>
-    <color name="dialog_button">#f5ef3c</color>
-    <color name="dialog_title">#be3c08</color>
+    <color name="white">#ffff</color>
+    <color name="colorAccent1">#FF4081</color>
+    <color name="darkgray">#6c6c6c</color>
 </resources>

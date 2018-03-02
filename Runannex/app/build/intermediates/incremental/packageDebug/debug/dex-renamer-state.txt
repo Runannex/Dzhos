@@ -1,4 +1,4 @@
-#Sat Feb 17 14:57:35 EET 2018
+#Fri Mar 02 15:42:10 EET 2018
 path.1=classes.dex
 path.0=classes.dex
 renamed.5=classes6.dex
@@ -7,12 +7,12 @@ renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.5=C\:\\Users\\alexa\\Desktop\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\13
-base.4=C\:\\Users\\alexa\\Desktop\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\16
-base.3=C\:\\Users\\alexa\\Desktop\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\14
-base.2=C\:\\Users\\alexa\\Desktop\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\17
-base.1=C\:\\Users\\alexa\\Desktop\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\12
-base.0=C\:\\Users\\alexa\\Desktop\\Dzhos\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\15
+base.5=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\12
+base.4=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\15
+base.3=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\14
+base.2=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\16
+base.1=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\11
+base.0=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\13
 path.5=classes.dex
 path.4=classes.dex
 path.3=classes.dex

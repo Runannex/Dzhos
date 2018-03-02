@@ -37,9 +37,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".Maps"
-            android:label="@string/title_activity_maps"></activity>
+        <activity android:name=".Ach"></activity>
     </application>
 
 </manifest>

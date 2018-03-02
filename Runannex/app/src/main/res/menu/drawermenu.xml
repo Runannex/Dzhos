@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+    <item android:id="@+id/train" android:title="Тренировка"/>
+    <item android:id="@+id/ach" android:title="Достижения"/>
+    <item android:id="@+id/prog" android:title="Прогресс"/>
+    <item android:id="@+id/plan" android:title="План"/>
+    </group>
+
+
+
+
+</menu>
