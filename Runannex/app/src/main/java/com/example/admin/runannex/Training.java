@@ -20,6 +20,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +29,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,6 +76,8 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     LocationManager locationManager;
     Context mContext;
     boolean ifmarked = false;
+    private static final String TAG = "myLogs";
+    private NavigationView navigationView;
 
 
     @Override
@@ -87,12 +92,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.abs_layout);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
-        ed = sPref.edit();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        navigationView.setItemIconTintList(null);
+        sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        ed = sPref.edit();
         weight = sPref.getString("weigh", "");
         name = sPref.getString("nam", "");
         growth = sPref.getString("growt", "");
@@ -138,6 +141,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnMap = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 ButtonMap.setVisibility(View.INVISIBLE);
                 start.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.INVISIBLE);
@@ -168,6 +172,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
 
             }
         };
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButtonMap.setOnClickListener(oclBtnMap);
 
         music = (ImageButton) findViewById(R.id.music);
@@ -195,6 +200,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 start.setVisibility(View.INVISIBLE);
@@ -210,6 +216,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnStop = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 intent = new Intent(v.getContext(), Result.class);
                 startActivity(intent);
                 ed.putInt("Min", Minutes);
@@ -243,6 +250,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnPause = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 TimeBuff += MillisecondTime;
                 handler.removeCallbacks(runnable);
                 pause.setVisibility(View.INVISIBLE);
@@ -255,6 +263,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnCont = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 cont.setVisibility(View.INVISIBLE);
@@ -263,9 +272,68 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             }
         };
         cont.setOnClickListener(oclBtnCont);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToggle.syncState();
     }
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        item.setChecked(true);
+        int id = item.getItemId();
+        navigationView.getMenu().findItem(id).setChecked(true);
+        if (id == R.id.plan) {
+            Intent intent = new Intent(this, Ach.class);
+            startActivity(intent);
+        }
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(mToggle.onOptionsItemSelected(item)){
+            return true;
+            }
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.plan:
+                Intent intent = new Intent(this, Ach.class);
+                startActivity(intent);
+                return true;
 
-
+            case R.id.action_problem:
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"slavafeatzhdos@gmail.com"});
+                i.putExtra(Intent.EXTRA_SUBJECT, "Ошибки");
+                i.putExtra(Intent.EXTRA_TEXT, " ");
+                try {
+                    startActivity(Intent.createChooser(i, "Выбирите почту..."));
+                    Toast.makeText(Training.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(Training.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            case R.id.info:
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setTitle("О приложении");
+                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setPositiveButton("OK", null);
+                builder.setIcon(R.drawable.ic_launcher);
+                builder.show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     public Runnable runnable = new Runnable() {
 
         public void run() {
@@ -283,90 +351,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         }
 
     };
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.train) {
-
-        } else if (id == R.id.ach) {
-
-        } else if (id == R.id.plan) {
-                Intent intent = new Intent(this, Ach.class);
-            startActivity(intent);
-            //mDrawerLayout.closeDrawers();
-        }
-
-        else if (id == R.id.prog) {
-
-        }
-
-        //mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
-
-
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        //getMenuInflater().inflate(R.menu.drawermenu, menu);
-
-        return true;
-    }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(mToggle.onOptionsItemSelected(item)){
-            return true;
-        }
-        int id = item.getItemId();
-        switch (id) {
-            case R.id.plan:
-                Intent intent = new Intent(this, Ach.class);
-                startActivity(intent);
-               // mDrawerLayout.closeDrawers();
-                return true;
-
-            case R.id.action_settings:
-
-                return true;
-            case R.id.action_problem:
-                Intent i = new Intent(Intent.ACTION_SEND);
-                i.setType("text/plain");
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"slavafeatzhdos@gmail.com"});
-                i.putExtra(Intent.EXTRA_SUBJECT, "Ошибки");
-                i.putExtra(Intent.EXTRA_TEXT, "");
-                try {
-                    startActivity(Intent.createChooser(i, "Выбирите почту..."));
-                    Toast.makeText(Training.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(Training.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-                }
-                return true;
-            case R.id.info:
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-                builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
-                builder.setPositiveButton("OK", null);
-                builder.setIcon(R.drawable.ic_launcher);
-
-                builder.show();
-                return true;
-
-
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
-
     public void onMapReady(final GoogleMap googleMap) {
         final Button ButtonMap = (Button) findViewById(R.id.Bmap);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -628,4 +612,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         }
     };
 
-}
+
+
+        }
