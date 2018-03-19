@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,15 +23,13 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,11 +48,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-
-
+import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.File;
+
 
 
 public class Training extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener{
@@ -63,12 +62,12 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     String weight, year, growth, name;
     int Seconds, Minutes, MilliSeconds;
     Handler handler;
-    Intent intent, intent2;
+    Intent intent;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     ImageButton music;
     private final int SPORT_LIST = 1;
     private final int EXIT = 2;
-    boolean ifsport = true;
+    boolean ifjogging = true;
     boolean ifmaps = false;
     boolean ifrun = false;
     boolean ifpause = false;
@@ -76,24 +75,41 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     LocationManager locationManager;
     Context mContext;
     boolean ifmarked = false;
-    private static final String TAG = "myLogs";
-    private NavigationView navigationView;
+    boolean iffocused = false;
+    boolean ifasked = false;
+    int DistanceRunSum = 0;
+    double latitude1 = 0;
+    double longtitude1 = 0;
+    double latitude2 = 0;
+    double longtitude2 = 0;
+    boolean loc = true;
+    float distance123;
+    int caloriii;
+    PolylineOptions line= new PolylineOptions().width(17).color(Color.BLUE);
+    private Toolbar toolbar;
+    public int time = 10;
+    ImageView imageView;
+
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mToggle = new ActionBarDrawerToggle(this,mDrawerLayout,R.string.open,R.string.close);
-        mDrawerLayout.addDrawerListener(mToggle);
-        mToggle.syncState();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.abs_layout);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        /*Intent i = new Intent(this, ACH.class);
+        i.putExtra("time",time);
+        finish();*/
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         ed = sPref.edit();
         weight = sPref.getString("weigh", "");
@@ -117,7 +133,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         final TextView halfVr = (TextView) findViewById(R.id.halfVr);
         final TextView distancer = (TextView) findViewById(R.id.distancer);
         final TextView caloriir = (TextView) findViewById(R.id.caloriir);
-        final ImageView imageView =  (ImageView) findViewById(R.id.imageView);
         mContext = this;
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -130,8 +145,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             @Override
             public void onClick(View v) {
                 showDialog(SPORT_LIST);
-
-
             }
         });
 
@@ -141,7 +154,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnMap = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                toggle.setDrawerIndicatorEnabled(true);
                 ButtonMap.setVisibility(View.INVISIBLE);
                 start.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.INVISIBLE);
@@ -157,7 +170,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 calorii.setVisibility(View.INVISIBLE);
                 distance.setVisibility(View.INVISIBLE);
                 music.setVisibility(View.INVISIBLE);
-                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 Training.context = getApplicationContext();
                 mapFragment.getMapAsync(Training.this);
 
@@ -172,7 +184,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
 
             }
         };
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButtonMap.setOnClickListener(oclBtnMap);
 
         music = (ImageButton) findViewById(R.id.music);
@@ -192,15 +203,14 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             }
         });
 
-         //if(f.exists() && !f.isDirectory()) {
-           //  imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));}
-         //else { imageView.setImageResource(R.drawable.ava);}
+         /*if(f.exists() && !f.isDirectory()) {
+            imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
+        }else { imageView.setImageResource(R.drawable.ava);}*/
 
 
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 start.setVisibility(View.INVISIBLE);
@@ -216,12 +226,14 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnStop = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 intent = new Intent(v.getContext(), Result.class);
                 startActivity(intent);
                 ed.putInt("Min", Minutes);
                 ed.putInt("Millis", MilliSeconds);
                 ed.putInt("Sec", Seconds);
+                ed.putInt("dist", DistanceRunSum);
+                ed.putFloat("speed", distance123);
+                ed.putInt("cali", caloriii);
                 ed.commit();
                 handler.removeCallbacks(runnable);
                 MillisecondTime = 0L;
@@ -242,6 +254,17 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 ifpause = false;
                 sport.setClickable(true);
                 ifmarked = false;
+                DistanceRunSum = 0;
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        googleMap.clear();
+                        line = null;
+                    }
+                });
+                calorii.setText("0");
+                halfV.setText("0");
+                distance.setText("0");
             }
         };
         stop.setOnClickListener(oclBtnStop);
@@ -250,7 +273,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnPause = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 TimeBuff += MillisecondTime;
                 handler.removeCallbacks(runnable);
                 pause.setVisibility(View.INVISIBLE);
@@ -263,7 +285,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnCont = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 cont.setVisibility(View.INVISIBLE);
@@ -272,50 +293,121 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             }
         };
         cont.setOnClickListener(oclBtnCont);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToggle.syncState();
+
     }
+
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        item.setChecked(true);
-        int id = item.getItemId();
-        navigationView.getMenu().findItem(id).setChecked(true);
-        if (id == R.id.plan) {
-            Intent intent = new Intent(this, Ach.class);
-            startActivity(intent);
+    public Runnable runnable = new Runnable() {
+
+        public void run() {
+            final TextView timer = (TextView) findViewById(R.id.timer);
+            final TextView calorii = (TextView) findViewById(R.id.calorii);
+            final TextView halfV = (TextView) findViewById(R.id.halfV);
+            int weightnum = Integer.parseInt(weight);
+            int growthnum = Integer.parseInt(growth);
+            int Seconds1 = 0;
+
+            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
+            UpdateTime = TimeBuff + MillisecondTime;
+            Seconds = (int) (UpdateTime / 1000);
+            Minutes = Seconds / 60;
+            Seconds = Seconds % 60;
+            MilliSeconds = (int) (UpdateTime % 1000);
+            timer.setText(String.format("%02d", Minutes) + ":"
+                    + String.format("%02d", Seconds) + ":"
+                    + String.format("%03d", MilliSeconds));
+
+            if (ifrun && DistanceRunSum > 10 && Seconds>1 && Seconds1 != Seconds) {
+                Seconds1 = Seconds;
+                distance123 = (DistanceRunSum*3600)/(Seconds*1000);
+               halfV.setText((int)distance123 + "");
+                if (ifjogging) {
+                   caloriii = (int)(0.035*weightnum + 0.029*(distance123*distance123/growthnum)*weightnum);
+                    calorii.setText(caloriii+"");
+                }
+                //if (!ifjogging) {calorii.setText();}
+            }
+            handler.postDelayed(this, 0);
         }
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
+
+    };
+
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(mToggle.onOptionsItemSelected(item)){
-            return true;
+
+
+    public void onMapReady(final GoogleMap googleMap) {
+        final Button ButtonMap = (Button) findViewById(R.id.Bmap);
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            googleMap.setMyLocationEnabled(true);
+            return;
+        }
+        googleMap.setMyLocationEnabled(true);
+        if (ButtonMap.getVisibility() == View.INVISIBLE) {
+            googleMap.getUiSettings().setAllGesturesEnabled(true);
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+            googleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                        buildAlertMessageNoGps();
+                    }
+                    return false;
+                }
+            });
+
+        } else {
+            googleMap.getUiSettings().setAllGesturesEnabled(false);
+            googleMap.getUiSettings().setZoomControlsEnabled(false);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        }
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!ifasked) {
+                buildAlertMessageNoGps();
+                ifasked = true;
             }
+
+        } else {
+            Criteria criteria = new Criteria();
+            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+            if (location != null && !iffocused) {
+                double lat = location.getLatitude();
+                double lng = location.getLongitude();
+                LatLng latlng = new LatLng(lat, lng);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
+                iffocused = true;
+            }
+        }
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.plan:
-                Intent intent = new Intent(this, Ach.class);
-                startActivity(intent);
-                return true;
+            case R.id.action_settings:
 
+                return true;
             case R.id.action_problem:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{"slavafeatzhdos@gmail.com"});
                 i.putExtra(Intent.EXTRA_SUBJECT, "Ошибки");
-                i.putExtra(Intent.EXTRA_TEXT, " ");
+                i.putExtra(Intent.EXTRA_TEXT, "");
                 try {
                     startActivity(Intent.createChooser(i, "Выбирите почту..."));
                     Toast.makeText(Training.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
@@ -329,49 +421,15 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 builder.setMessage("Lorem ipsum dolor ....");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
+
                 builder.show();
                 return true;
+
+
         }
         return super.onOptionsItemSelected(item);
+
     }
-    public Runnable runnable = new Runnable() {
-
-        public void run() {
-            final TextView timer = (TextView) findViewById(R.id.timer);
-            MillisecondTime = SystemClock.uptimeMillis() - StartTime;
-            UpdateTime = TimeBuff + MillisecondTime;
-            Seconds = (int) (UpdateTime / 1000);
-            Minutes = Seconds / 60;
-            Seconds = Seconds % 60;
-            MilliSeconds = (int) (UpdateTime % 1000);
-            timer.setText(String.format("%02d", Minutes) + ":"
-                    + String.format("%02d", Seconds) + ":"
-                    + String.format("%03d", MilliSeconds));
-            handler.postDelayed(this, 0);
-        }
-
-    };
-    public void onMapReady(final GoogleMap googleMap) {
-        final Button ButtonMap = (Button) findViewById(R.id.Bmap);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            googleMap.setMyLocationEnabled(true);
-            return;
-        }
-        googleMap.setMyLocationEnabled(true);
-        if (ButtonMap.getVisibility() == View.INVISIBLE) {
-            googleMap.getUiSettings().setAllGesturesEnabled(true);
-            googleMap.getUiSettings().setZoomControlsEnabled(true);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        } else {
-            googleMap.getUiSettings().setAllGesturesEnabled(false);
-            googleMap.getUiSettings().setZoomControlsEnabled(false);
-            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        }
-    }
-
-
-
 
 
     @Override
@@ -388,9 +446,11 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                         public void onClick(DialogInterface dialogInterface, int item) {
                             if (item == 0) {
                                 sport.setImageResource(R.drawable.sport_running);
+                                ifjogging = true;
                             }
                             if (item == 1) {
                                 sport.setImageResource(R.drawable.sport_cycling);
+                                ifjogging = false;
                             }
 
                             Toast.makeText(getApplicationContext(), "Выбранный спорт " + Sport[item], Toast.LENGTH_SHORT).show();
@@ -546,7 +606,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            buildAlertMessageNoGps();
+            if (!ifasked) {
+                buildAlertMessageNoGps();
+            }
+
 
         }
     }
@@ -572,29 +635,99 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
 
     LocationListener locationListenerGPS = new LocationListener() {
         @Override
-        public void onLocationChanged(android.location.Location location) {
+        public void onLocationChanged(final android.location.Location location) {
+            int weightnum = Integer.parseInt(weight);
+            int growthnum = Integer.parseInt(growth);
             final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-            final double latitude = location.getLatitude();
-            final double longitude = location.getLongitude();
-            final LatLng latLng = new LatLng(latitude, longitude);
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    CameraPosition camPos = new CameraPosition.Builder()
-                            .target(new LatLng(latitude, longitude))
-                            .zoom(16)
-                            .build();
-                    CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
-                    googleMap.animateCamera(camUpd3);
-                    if (ifmarked == false && ifrun) {
-                        Marker mSydney = googleMap.addMarker(new MarkerOptions()
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.sport_cycling)));
-                        ifmarked = true;
+            final TextView distancer = (TextView) findViewById(R.id.distance);
+            final TextView calorii = (TextView) findViewById(R.id.calorii);
+            final TextView halfV = (TextView) findViewById(R.id.halfV);
+            final double[] latitude = {location.getLatitude()};
+            final double[] longitude = {location.getLongitude()};
+            final LatLng latLng = new LatLng(latitude[0], longitude[0]);
+            if (line == null) {
+                line = new PolylineOptions().width(17).color(Color.BLUE);
+            }
+
+            if (loc) {
+                loc = false;
+                latitude1 = location.getLatitude();
+                longtitude1 = location.getLongitude();
+                if (ifrun) {
+                    if (latitude2 != 0) {
+                        Location locationA = new Location("point A");
+                        locationA.setLatitude(latitude1);
+                        locationA.setLongitude(longtitude1);
+                        final LatLng latlng1 = new LatLng(latitude1, longtitude1);
+                        final LatLng latlng2 = new LatLng(latitude2, longtitude2);
+                        Location locationB = new Location("point B");
+                        locationB.setLatitude(latitude2);
+                        locationB.setLongitude(longtitude2);
+                        if (!ifpause) {
+                            DistanceRunSum += locationA.distanceTo(locationB);
+                            distancer.setText(DistanceRunSum + "");
+                            mapFragment.getMapAsync(new OnMapReadyCallback() {
+                                @Override
+                                public void onMapReady(GoogleMap googleMap) {
+                                    line.add(latlng1, latlng2);
+                                    googleMap.addPolyline(line);
+                                }
+                            });
+
+                        }
                     }
                 }
-            });
-        }
+
+                } else {
+                    loc = true;
+                    latitude2 = location.getLatitude();
+                    longtitude2 = location.getLongitude();
+                    if (ifrun && !ifpause) {
+                        if (latitude1 != 0) {
+                            Location locationA = new Location("point A");
+                            locationA.setLatitude(latitude2);
+                            locationA.setLongitude(longtitude2);
+                            final LatLng latlng1 = new LatLng(latitude1, longtitude1);
+                            final LatLng latlng2 = new LatLng(latitude2, longtitude2);
+                            Location locationB = new Location("point B");
+                            locationB.setLatitude(latitude1);
+                            locationB.setLongitude(longtitude1);
+                            if (!ifpause) {
+                                DistanceRunSum += locationA.distanceTo(locationB);
+
+                                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                                    @Override
+                                    public void onMapReady(GoogleMap googleMap) {
+                                        line.add(latlng1, latlng2);
+                                        googleMap.addPolyline(line);
+                                    }
+                                });
+                            }
+                        }
+                    }
+
+                }
+
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        CameraPosition camPos = new CameraPosition.Builder()
+                                .target(new LatLng(latitude[0], longitude[0]))
+                                .zoom(16)
+                                .build();
+                        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+                        googleMap.animateCamera(camUpd3);
+                        if (!ifmarked && ifrun) {
+                            googleMap.addMarker(new MarkerOptions()
+                                    .anchor(0.5f, 0.5f)
+                                    .position(latLng)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.starterpoint)));
+                            ifmarked = true;
+
+                        }
+                    }
+                });
+            }
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -610,8 +743,30 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         public void onProviderDisabled(String provider) {
 
         }
+
     };
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
 
+        if (id == R.id.train) {
+
+        } else if (id == R.id.ach) {
+            Intent i = new Intent(this, ACH.class);
+            startActivity(i);
+
+        } else if (id == R.id.stat) {
+
+        } else if (id == R.id.plane) {
+
+        } else if (id == R.id.alltrain) {
 
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    }

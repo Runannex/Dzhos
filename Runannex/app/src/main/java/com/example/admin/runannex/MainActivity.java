@@ -53,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
                     final Button next = (Button) findViewById(R.id.next);
                     final TextView error = (TextView) findViewById(R.id.error);
                     name.requestFocus();
-                    getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-                    getSupportActionBar().setCustomView(R.layout.abs_layout);
                     error.setVisibility(View.INVISIBLE);
                     View.OnClickListener oclBtnOk = new View.OnClickListener() {
                         @Override

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.admin.runannex"
-    android:installLocation="preferExternal"
     android:versionCode="1"
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="15"
+        android:minSdkVersion="16"
         android:targetSdkVersion="26" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -35,27 +34,30 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.example.admin.runannex.MainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.admin.runannex.Training" />
+        <activity
+            android:name="com.example.admin.runannex.Training"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
         <activity android:name="com.example.admin.runannex.Result" />
+        <activity
+            android:name="com.example.admin.runannex.ACH"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-        <activity android:name="com.example.admin.runannex.Ach" />
-
         <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0" />

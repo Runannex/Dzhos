@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/train"
+            android:title="Главный экран" />
+        <item
+            android:id="@+id/ach"
+            android:title="Достижения" />
+        <item
+            android:id="@+id/stat"
+            android:title="Статистика"/>
+        <item
+            android:id="@+id/plane"
+            android:title="План" />
+        <item
+            android:id="@+id/alltrain"
+            android:title="Все тренировки" />
+    </group>
+
+</menu>
