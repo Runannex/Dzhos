@@ -33,7 +33,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Result" />
+        <activity android:name=".Result"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ACH"
             android:theme="@style/AppTheme.NoActionBar"/>
 

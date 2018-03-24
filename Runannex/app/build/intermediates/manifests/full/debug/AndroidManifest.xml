@@ -50,7 +50,9 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name="com.example.admin.runannex.Result" />
+        <activity
+            android:name="com.example.admin.runannex.Result"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.example.admin.runannex.ACH"
             android:theme="@style/AppTheme.NoActionBar" />

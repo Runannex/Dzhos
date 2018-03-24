@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
@@ -23,6 +24,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.constraint.solver.widgets.Rectangle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +32,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,7 +55,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import java.io.File;
-
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 public class Training extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener{
@@ -88,9 +94,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     PolylineOptions line= new PolylineOptions().width(17).color(Color.BLUE);
     private Toolbar toolbar;
     public int time = 10;
-    ImageView imageView;
-
-
+    ImageView imageView2;
+    String format = "jpg";
+    String fileName = "FullScreenshot." + format;
+    public int i;
 
 
     @Override
@@ -100,24 +107,33 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //final ImageView imageView2 = (ImageView)findViewById(R.id.imageView2);
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        String path = Environment.getExternalStorageDirectory().getPath();
+        File f = new File(path + "/.Runannex/picture.png");
+        File a = new File(path+ "/.Runannex/picture2.png");
+        View header = navigationView.getHeaderView(0);
+        TextView textView = (TextView)header.findViewById(R.id.textView);
+        textView.setText(name);
+        textView.setTextColor(R.color.colorAccent);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
         navigationView.setNavigationItemSelectedListener(this);
-        /*Intent i = new Intent(this, ACH.class);
-        i.putExtra("time",time);
-        finish();*/
+        final ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
+        if(f.exists() && !f.isDirectory()) {
+            imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
+        }else { imageView.setImageResource(R.drawable.ava);}
+
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         ed = sPref.edit();
         weight = sPref.getString("weigh", "");
         name = sPref.getString("nam", "");
         growth = sPref.getString("growt", "");
         year = sPref.getString("yea", "");
-        String path = Environment.getExternalStorageDirectory().getPath();
-        File f = new File(path + "/.Runannex/picture.png");
         final Button start = (Button) findViewById(R.id.start);
         final Button pause = (Button) findViewById(R.id.pause);
         final Button stop = (Button) findViewById(R.id.stop);
@@ -172,7 +188,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 music.setVisibility(View.INVISIBLE);
                 Training.context = getApplicationContext();
                 mapFragment.getMapAsync(Training.this);
-
                 float width = 100;
                 float height = 557;
                 params.width = (int) convertDpToPx(context, width);
@@ -203,9 +218,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             }
         });
 
-         /*if(f.exists() && !f.isDirectory()) {
-            imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
-        }else { imageView.setImageResource(R.drawable.ava);}*/
+
 
 
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
@@ -226,8 +239,12 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnStop = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intent = new Intent(v.getContext(), Result.class);
-                startActivity(intent);
+                Bitmap bitmap = takeScreenshot();
+                saveBitmap(bitmap);
+                Intent a = new Intent(Training.this, Result.class);
+                imageView2.setImageBitmap(bitmap);
+                //a.putExtra("bmp", R.id.imageView2);
+                startActivity(a);
                 ed.putInt("Min", Minutes);
                 ed.putInt("Millis", MilliSeconds);
                 ed.putInt("Sec", Seconds);
@@ -267,6 +284,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 distance.setText("0");
             }
         };
+        i = 1;
         stop.setOnClickListener(oclBtnStop);
 
 
@@ -294,6 +312,27 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         };
         cont.setOnClickListener(oclBtnCont);
 
+    }
+
+    private Bitmap takeScreenshot() {
+        View rootView = findViewById(android.R.id.content).getRootView();
+        Toast.makeText(Training.this, "Success screenshot", Toast.LENGTH_LONG).show();
+        rootView.setDrawingCacheEnabled(true);
+        return rootView.getDrawingCache();
+    }
+    public void saveBitmap(Bitmap bitmap) {
+        File imagePath = new File(Environment.getExternalStorageDirectory() + "/screenshot.png");
+        FileOutputStream fos;
+        try {
+            fos = new FileOutputStream(imagePath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            Log.e("GREC", e.getMessage(), e);
+        } catch (IOException e) {
+            Log.e("GREC", e.getMessage(), e);
+        }
     }
 
     @Override
@@ -479,7 +518,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     });
-
+                    quitDialog.setCancelable(true);
                     quitDialog.show();
 
                 default:
@@ -753,8 +792,31 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         if (id == R.id.train) {
 
         } else if (id == R.id.ach) {
-            Intent i = new Intent(this, ACH.class);
-            startActivity(i);
+            if(i==1){
+                AlertDialog.Builder quitDialog = new AlertDialog.Builder(
+                        Training.this);
+                quitDialog.setTitle("Вы уверены что хотите покинуть тренировку?                                ");
+                quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(Training.this, ACH.class);
+                        startActivity(i);
+                        finish();
+
+                    }
+                });
+                quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                quitDialog.show();
+
+            }
+            else {
+                Intent i = new Intent(this, ACH.class);
+                startActivity(i);
+            }
 
         } else if (id == R.id.stat) {
 

@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
-INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
-INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
-INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
+ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
+INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
+INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
+INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
 MERGED from [com.android.support:design:26.1.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\design-26.1.0.aar\9f2e7e01c8419a234695edcc63bb87d6\AndroidManifest.xml:17:1-31:12
 MERGED from [com.mindorks:placeholderview:0.2.7] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\placeholderview-0.2.7.aar\c7736d3ee8c0ef36c454856f1276768d\AndroidManifest.xml:2:1-12:12
 MERGED from [com.android.support:recyclerview-v7:26.1.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.1.0.aar\49df0986304c56d205fa63cf7c0d3606\AndroidManifest.xml:17:1-28:12
@@ -29,20 +29,20 @@ MERGED from [com.google.android.gms:play-services-base-license:11.8.0] C:\Users\
 MERGED from [com.google.android.gms:play-services-basement-license:11.8.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\play-services-basement-license-11.8.0.aar\3bcf6ba8898bb58539de0fd881d9554c\AndroidManifest.xml:2:1-6:12
 MERGED from [com.google.android.gms:play-services-tasks-license:11.8.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\play-services-tasks-license-11.8.0.aar\92e18d165019503f6c90cf298cd61005\AndroidManifest.xml:2:1-6:12
 MERGED from [android.arch.lifecycle:runtime:1.0.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\runtime-1.0.0.aar\0dc5bbf743a59ffaba594f8993ffb91e\AndroidManifest.xml:17:1-30:12
-INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
-INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
-INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
+INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
+INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
+INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
 	package
 		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:3:5-41
 		INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml
 	android:versionName
 		INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
 		INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml
 	android:versionCode
 		INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-47:12
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:1-48:12
 		INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml
 	xmlns:android
 		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:2:11-69
@@ -67,7 +67,7 @@ ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.x
 	android:name
 		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:10:23-57
 application
-ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:12:5-45:19
+ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:12:5-46:19
 MERGED from [com.android.support:design:26.1.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\design-26.1.0.aar\9f2e7e01c8419a234695edcc63bb87d6\AndroidManifest.xml:25:5-29:19
 MERGED from [com.android.support:design:26.1.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\design-26.1.0.aar\9f2e7e01c8419a234695edcc63bb87d6\AndroidManifest.xml:25:5-29:19
 MERGED from [com.android.support:recyclerview-v7:26.1.0] C:\Users\alexa\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-26.1.0.aar\49df0986304c56d205fa63cf7c0d3606\AndroidManifest.xml:22:5-26:19
@@ -159,21 +159,23 @@ ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.x
 	android:name
 		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:33:13-43
 activity#com.example.admin.runannex.Result
-ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:36:9-44
+ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:36:9-37:58
+	android:theme
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:37:13-56
 	android:name
 		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:36:19-41
 activity#com.example.admin.runannex.ACH
-ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:37:9-38:58
+ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:38:9-39:58
 	android:theme
-		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:38:13-56
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:39:13-56
 	android:name
-		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:37:19-38
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:38:19-38
 meta-data#com.google.android.geo.API_KEY
-ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:40:9-42:55
+ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:41:9-43:55
 	android:value
-		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:42:13-52
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:43:13-52
 	android:name
-		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:41:13-58
+		ADDED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml:42:13-58
 uses-sdk
 INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\alexa\Desktop\Ivanko\Runannex\app\src\main\AndroidManifest.xml

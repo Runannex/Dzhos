@@ -44,8 +44,6 @@ public class MainActivity extends AppCompatActivity {
                 ed = sPref.edit();
 
                 if (sPref.getBoolean("firstrun", true)) {
-
-
                     final EditText weight = (EditText) findViewById(R.id.weight);
                     final EditText year = (EditText) findViewById(R.id.year);
                     final EditText name = (EditText) findViewById(R.id.name);

@@ -1,7 +1,9 @@
 package com.example.admin.runannex;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,39 +12,44 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ACH extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
     List<Phone> ach = new ArrayList<>();
+    ImageView imageView;
+    String path = Environment.getExternalStorageDirectory().getPath();
+    File f = new File(path + "/.Runannex/picture.png");
+    SharedPreferences sPref;
+    SharedPreferences.Editor ed;
+    String  name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ach);
-        /*ach.add(new Phone ("Пробежать 1 км", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 5 км", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 10 км", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 20 км",  R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Сжечь 10 калорий", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Сжечь 50 калорий",R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Сжечь 100 калорий", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Сжечь 500 калорий", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Набрать с/c 1км/м",  R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Набрать с/c 1км/м",  R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Набрать с/c 5км/м", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Набрать с/c 10км/м",  R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Набрать с/c 20км/м",  R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 1 км",  R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 5 км", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 10 км", R.drawable.ic_clear_black_24dp));
-        ach.add(new Phone ("Пробежать 20 км",  R.drawable.ic_clear_black_24dp));*/
         toolbar = (Toolbar)findViewById(R.id.toolbar);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View header = navigationView.getHeaderView(0);
+        TextView textView = (TextView)header.findViewById(R.id.textView);
+        sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        name = sPref.getString("nam", "");
+        textView.setText(name);
+        textView.setTextColor(R.color.colorAccent);
+        textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
+        if(f.exists() && !f.isDirectory()) {
+            imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
+        }else { imageView.setImageResource(R.drawable.ava);}
         int a = 0;
         int dis = 15;
         int cal = 105;
@@ -146,13 +153,7 @@ public class ACH extends AppCompatActivity implements NavigationView.OnNavigatio
         else{
             ach.add(new Phone ("ПЗаниматься спортом 2 часа", R.drawable.ic_clear_black_24dp));
         }
-
-
-
-
         selection.setText("Всего выполнено " + a + " из 16" );
-
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list);
         DataAdapter adapter = new DataAdapter(this, ach);
         recyclerView.setAdapter(adapter);
@@ -162,13 +163,13 @@ public class ACH extends AppCompatActivity implements NavigationView.OnNavigatio
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
@@ -194,16 +195,11 @@ public class ACH extends AppCompatActivity implements NavigationView.OnNavigatio
                 builder.setMessage("Lorem ipsum dolor ....");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
-
                 builder.show();
                 return true;
-
-
         }
         return super.onOptionsItemSelected(item);
-
     }
-
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 

@@ -1888,6 +1888,10 @@
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\1ef8ef95b07664aa00f9253f8bceb773\\res\\drawable\\abc_ic_ab_back_material.xml"
     },
     {
+        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable_sport_running1.png.flat",
+        "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\drawable\\sport_running1.png"
+    },
+    {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_ab_share_pack_mtrl_alpha.9.png.flat",
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\1ef8ef95b07664aa00f9253f8bceb773\\res\\drawable-mdpi-v4\\abc_ab_share_pack_mtrl_alpha.9.png"
     },
@@ -2276,6 +2280,10 @@
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\mediarouter-v7-26.1.0.aar\\5f257802ab56dcd7743a6f56ba3849f5\\res\\drawable-xhdpi-v4\\ic_mr_button_connected_27_dark.png"
     },
     {
+        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable_statis.png.flat",
+        "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\drawable\\statis.png"
+    },
+    {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
         "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
     },
@@ -2406,6 +2414,10 @@
     {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_ic_mr_button_connected_10_dark.png.flat",
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\mediarouter-v7-26.1.0.aar\\5f257802ab56dcd7743a6f56ba3849f5\\res\\drawable-xxhdpi-v4\\ic_mr_button_connected_10_dark.png"
+    },
+    {
+        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable_plane.png.flat",
+        "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\drawable\\plane.png"
     },
     {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable_abc_btn_borderless_material.xml.flat",
@@ -3224,6 +3236,10 @@
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\1ef8ef95b07664aa00f9253f8bceb773\\res\\drawable-hdpi-v4\\abc_ic_star_black_36dp.png"
     },
     {
+        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable_alltrain.png.flat",
+        "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\drawable\\alltrain.png"
+    },
+    {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_spinner_mtrl_am_alpha.9.png.flat",
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\1ef8ef95b07664aa00f9253f8bceb773\\res\\drawable-mdpi-v4\\abc_spinner_mtrl_am_alpha.9.png"
     },
@@ -3582,6 +3598,10 @@
     {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xxhdpi-v4_ic_mr_button_connected_27_dark.png.flat",
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\mediarouter-v7-26.1.0.aar\\5f257802ab56dcd7743a6f56ba3849f5\\res\\drawable-xxhdpi-v4\\ic_mr_button_connected_27_dark.png"
+    },
+    {
+        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable_dostizheniya_1.png.flat",
+        "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\drawable\\dostizheniya_1.png"
     },
     {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_scrubber_track_mtrl_alpha.9.png.flat",
