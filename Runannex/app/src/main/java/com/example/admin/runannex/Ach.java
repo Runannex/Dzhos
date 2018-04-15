@@ -24,7 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ACH extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Ach extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
     List<Phone> ach = new ArrayList<>();
     ImageView imageView;
@@ -44,7 +44,7 @@ public class ACH extends AppCompatActivity implements NavigationView.OnNavigatio
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         name = sPref.getString("nam", "");
         textView.setText(name);
-        textView.setTextColor(R.color.colorAccent);
+        //textView.setTextColor(R.color.colorAccent);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
         if(f.exists() && !f.isDirectory()) {
@@ -184,9 +184,9 @@ public class ACH extends AppCompatActivity implements NavigationView.OnNavigatio
                 i.putExtra(Intent.EXTRA_TEXT, "");
                 try {
                     startActivity(Intent.createChooser(i, "Выбирите почту..."));
-                    Toast.makeText(ACH.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Ach.this, "Спасибо за помощь", Toast.LENGTH_SHORT).show();
                 } catch (android.content.ActivityNotFoundException ex) {
-                    Toast.makeText(ACH.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Ach.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.info:
@@ -210,6 +210,9 @@ public class ACH extends AppCompatActivity implements NavigationView.OnNavigatio
 
 
         } else if (id == R.id.stat) {
+            Intent i = new Intent(this, Stata.class);
+            startActivity(i);
+
 
         } else if (id == R.id.plane) {
 
