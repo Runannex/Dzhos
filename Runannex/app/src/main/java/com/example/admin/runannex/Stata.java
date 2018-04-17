@@ -109,9 +109,6 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
-
-                return true;
             case R.id.action_problem:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");

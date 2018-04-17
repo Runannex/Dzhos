@@ -31,7 +31,6 @@ public class Result extends AppCompatActivity {
     SharedPreferences sPref;
     int Seconds, Minutes, MilliSeconds,caloriii,distance;
     float speed;
-    ImageView imageView2;
     private Toolbar toolbar;
 
 
@@ -39,19 +38,27 @@ public class Result extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
-        String path = Environment.getExternalStorageDirectory().toString();
-        OutputStream fOut = null;
-        Integer counter = 0;
-        File file = new File(path, "screen"+".jpg");
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back);
-        ImageView ImageView = (ImageView)findViewById(R.id.imageView);
-        if(file.exists() && !file.isDirectory()) {
-            ImageView.setImageURI(Uri.parse(new File(path, "screen"+".jpg").toString()));
-        }
+        final TextView timer = (TextView) findViewById(R.id.timer);
+        final TextView speeder = (TextView) findViewById(R.id.halfV);
+        final TextView caloriir = (TextView) findViewById(R.id.calorii);
+        final TextView distancer = (TextView) findViewById(R.id.distance);
+
+        sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        Seconds = sPref.getInt("Sec",0);
+        Minutes = sPref.getInt("Min",0);
+        MilliSeconds = sPref.getInt("Millis",0);
+        caloriii = sPref.getInt("cali",0);
+        speed = sPref.getFloat("speed",0);
+        distance = sPref.getInt("dist",0);
+        timer.setText(String.format("%02d", Minutes) + ":" + String.format("%02d", Seconds) + ":" + String.format("%03d", MilliSeconds));
+        caloriir.setText(caloriii+"");
+        speeder.setText((int)speed+"");
+        distancer.setText(distance+"");
+
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,16 +68,18 @@ public class Result extends AppCompatActivity {
         });
 
     }
+
+
+
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch(id){
-            case R.id.action_settings :
-
-                return true;
             case R.id.action_problem:
                 Intent i = new Intent(Intent.ACTION_SEND); i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_EMAIL, new String[] {"slavafeatzhdos@gmail.com"});
@@ -81,7 +90,13 @@ public class Result extends AppCompatActivity {
                 } catch (android.content.ActivityNotFoundException ex) { Toast.makeText(Result.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show(); }
                 return true;
             case R.id.info:
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+                builder.setTitle("О приложении");
+                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setPositiveButton("OK", null);
+                builder.setIcon(R.drawable.ic_launcher);
 
+                builder.show();
                 return true;
         }
         return super.onOptionsItemSelected(item);

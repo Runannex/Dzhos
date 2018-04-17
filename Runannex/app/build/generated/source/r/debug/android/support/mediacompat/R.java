@@ -71,18 +71,18 @@ public final class R {
         public static final int action_container = 0x7f0a0010;
         public static final int action_divider = 0x7f0a0012;
         public static final int action_image = 0x7f0a0013;
-        public static final int action_text = 0x7f0a001b;
-        public static final int actions = 0x7f0a001c;
-        public static final int async = 0x7f0a0025;
-        public static final int blocking = 0x7f0a0029;
-        public static final int cancel_action = 0x7f0a002f;
-        public static final int chronometer = 0x7f0a0035;
-        public static final int end_padder = 0x7f0a004d;
-        public static final int forever = 0x7f0a0058;
-        public static final int icon = 0x7f0a0061;
-        public static final int icon_group = 0x7f0a0062;
-        public static final int info = 0x7f0a0069;
-        public static final int italic = 0x7f0a006a;
+        public static final int action_text = 0x7f0a001a;
+        public static final int actions = 0x7f0a001b;
+        public static final int async = 0x7f0a0024;
+        public static final int blocking = 0x7f0a0028;
+        public static final int cancel_action = 0x7f0a002e;
+        public static final int chronometer = 0x7f0a0034;
+        public static final int end_padder = 0x7f0a004c;
+        public static final int forever = 0x7f0a0057;
+        public static final int icon = 0x7f0a0060;
+        public static final int icon_group = 0x7f0a0061;
+        public static final int info = 0x7f0a0068;
+        public static final int italic = 0x7f0a0069;
         public static final int line1 = 0x7f0a006f;
         public static final int line3 = 0x7f0a0070;
         public static final int media_actions = 0x7f0a0076;
@@ -120,7 +120,7 @@ public final class R {
         public static final int notification_template_part_time = 0x7f0d0044;
     }
     public static final class string {
-        public static final int status_bar_notification_info_overflow = 0x7f100063;
+        public static final int status_bar_notification_info_overflow = 0x7f100064;
     }
     public static final class style {
         public static final int TextAppearance_Compat_Notification = 0x7f110103;

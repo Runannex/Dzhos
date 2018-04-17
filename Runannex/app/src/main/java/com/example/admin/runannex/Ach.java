@@ -173,9 +173,6 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
-
-                return true;
             case R.id.action_problem:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");

@@ -94,6 +94,12 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     double longtitude2 = 0;
     boolean loc = true;
     float distance123;
+    int[] distanceArr = new int[100];
+    int[] timeArr = new int[100];
+    int[] caloriiArr = new int[100];
+    int[] speedArr = new int[100];
+    Bundle b = new Bundle();
+
     int caloriii;
     PolylineOptions line= new PolylineOptions().width(17).color(Color.BLUE);
     private Toolbar toolbar;
@@ -115,6 +121,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         File file = new File(path, "screen"+".jpg");
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(0xFFFFFFFF);
         //final ImageView imageView2 = (ImageView)findViewById(R.id.imageView2);
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -124,11 +131,9 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         path = Environment.getExternalStorageDirectory().getPath();
         File f = new File(path + "/.Runannex/picture.png");
-        //File a = new File(path+ "/.Runannex/picture2.png");
         View header = navigationView.getHeaderView(0);
         TextView textView = (TextView)header.findViewById(R.id.textView);
         textView.setText(name);
-        //textView.setTextColor(R.color.colorAccent);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         navigationView.setNavigationItemSelectedListener(this);
         final ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
@@ -157,6 +162,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         final TextView halfVr = (TextView) findViewById(R.id.halfVr);
         final TextView distancer = (TextView) findViewById(R.id.distancer);
         final TextView caloriir = (TextView) findViewById(R.id.caloriir);
+        final View linemap = (View) findViewById(R.id.line);
         mContext = this;
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
         locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -195,6 +201,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 calorii.setVisibility(View.INVISIBLE);
                 distance.setVisibility(View.INVISIBLE);
                 music.setVisibility(View.INVISIBLE);
+                linemap.setVisibility(View.INVISIBLE);
                 Training.context = getApplicationContext();
                 mapFragment.getMapAsync(Training.this);
                 float width = 100;
@@ -265,6 +272,9 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 Seconds = 0;
                 Minutes = 0;
                 MilliSeconds = 0;
+
+
+
                 stop.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.INVISIBLE);
                 cont.setVisibility(View.INVISIBLE);
@@ -440,26 +450,23 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 ifasked = true;
             }
 
-        } else {
-            Criteria criteria = new Criteria();
-            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-            if (location != null && !iffocused) {
-                double lat = location.getLatitude();
-                double lng = location.getLongitude();
-                LatLng latlng = new LatLng(lat, lng);
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
-                iffocused = true;
-            }
         }
+        googleMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+
+            @Override
+            public void onMyLocationChange(Location arg) {
+                double lat = arg.getLatitude();
+                double lng = arg.getLongitude();
+                LatLng latlng = new LatLng(lat, lng);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
+            }
+        });
     }
 
 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.action_settings:
-
-                return true;
             case R.id.action_problem:
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
@@ -563,6 +570,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         final TextView halfVr = (TextView) findViewById(R.id.halfVr);
         final TextView distancer = (TextView) findViewById(R.id.distancer);
         final TextView caloriir = (TextView) findViewById(R.id.caloriir);
+        final View linemap = (View) findViewById(R.id.line);
         final ViewGroup.LayoutParams params = mapFragment.getView().getLayoutParams();
         if (ifrun) {
             stop.setVisibility(View.VISIBLE);
@@ -580,6 +588,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         distancer.setVisibility(View.VISIBLE);
         calorii.setVisibility(View.VISIBLE);
         distance.setVisibility(View.VISIBLE);
+        linemap.setVisibility(View.VISIBLE);
         music.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         Training.context = getApplicationContext();
@@ -614,6 +623,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 final TextView distance = (TextView) findViewById(R.id.distance);
                 final TextView halfV = (TextView) findViewById(R.id.halfV);
                 final TextView halfVr = (TextView) findViewById(R.id.halfVr);
+                final View linemap = (View) findViewById(R.id.line);
                 final TextView distancer = (TextView) findViewById(R.id.distancer);
                 final TextView caloriir = (TextView) findViewById(R.id.caloriir);
                 final ViewGroup.LayoutParams params = mapFragment.getView().getLayoutParams();
@@ -629,6 +639,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 sport.setVisibility(View.VISIBLE);
                 time.setVisibility(View.VISIBLE);
                 caloriir.setVisibility(View.VISIBLE);
+                linemap.setVisibility(View.VISIBLE);
                 halfV.setVisibility(View.VISIBLE);
                 halfVr.setVisibility(View.VISIBLE);
                 distancer.setVisibility(View.VISIBLE);
