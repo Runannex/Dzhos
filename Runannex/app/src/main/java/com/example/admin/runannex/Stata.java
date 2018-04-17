@@ -32,6 +32,8 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(viewClickListener);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(0xFFFFFFFF);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
         TextView textView = (TextView)header.findViewById(R.id.textView);

@@ -133,6 +133,8 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         File f = new File(path + "/.Runannex/picture.png");
         View header = navigationView.getHeaderView(0);
         TextView textView = (TextView)header.findViewById(R.id.textView);
+        sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        name = sPref.getString("nam", "");
         textView.setText(name);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         navigationView.setNavigationItemSelectedListener(this);

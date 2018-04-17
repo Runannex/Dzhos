@@ -41,6 +41,7 @@ public class Result extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(0xFFFFFFFF);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back);
         final TextView timer = (TextView) findViewById(R.id.timer);
         final TextView speeder = (TextView) findViewById(R.id.halfV);
