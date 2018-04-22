@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class Ach extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar toolbar;
@@ -33,30 +34,72 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
     String  name;
+    int[] distanceArr = new int[100];
+    int[] timeArr = new int[100];
+    int[] caloriiArr = new int[100];
+    int[] speedArr = new int[100];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ach);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(0xFFFFFFFF);
+        toolbar.setTitleTextAppearance(this, R.style.RunannexFont);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
         TextView textView = (TextView)header.findViewById(R.id.textView);
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         name = sPref.getString("nam", "");
         textView.setText(name);
-        //textView.setTextColor(R.color.colorAccent);
+        String savedString = sPref.getString("distancearr", "");
+        if (savedString != "") {
+            StringTokenizer st = new StringTokenizer(savedString, ",");
+            for (int i = 0; i < 100; i++) {
+                distanceArr[i] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        String savedString1 = sPref.getString("caloriiarr", "");
+        if (savedString1 != "") {
+            StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+            for (int i = 0; i < 100; i++) {
+                caloriiArr[i] = Integer.parseInt(st1.nextToken());
+            }
+        }
+
+        String savedString2 = sPref.getString("timearr", "");
+        if (savedString2 != "") {
+            StringTokenizer st2 = new StringTokenizer(savedString2, ",");
+            for (int i = 0; i < 100; i++) {
+                timeArr[i] = Integer.parseInt(st2.nextToken());
+            }
+        }
+
+        String savedString3 = sPref.getString("speedarr", "");
+        if (savedString3 != "") {
+            StringTokenizer st3 = new StringTokenizer(savedString3, ",");
+            for (int i = 0; i < 100; i++) {
+                speedArr[i] = Integer.parseInt(st3.nextToken());
+            }
+        }
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
         if(f.exists() && !f.isDirectory()) {
             imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
         }else { imageView.setImageResource(R.drawable.ava);}
         int a = 0;
-        int dis = 15;
-        int cal = 105;
-        int v = 2;
-        int time = 45;
+        int dis = 0;
+        int cal = 0;
+        int v = 0;
+        int time = 0;
+        for(int i = 0;i<100;i++){
+            dis+=distanceArr[i];
+            time+=timeArr[i] ;
+            cal+=caloriiArr[i];
+            v+=speedArr[i];
+
+
+        }
         final TextView selection = (TextView) findViewById(R.id.selection);
         //dis = extras.getInt("time");
         if(dis>1){
@@ -213,9 +256,9 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
             startActivity(i);
 
 
-        } else if (id == R.id.plane) {
-
         } else if (id == R.id.alltrain) {
+            Intent i = new Intent(this, Alltrain.class);
+            startActivity(i);
 
         }
 

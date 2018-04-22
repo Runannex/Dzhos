@@ -12,7 +12,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,7 +23,6 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.constraint.solver.widgets.Rectangle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
@@ -32,7 +30,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -44,9 +41,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -55,24 +54,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import com.google.android.gms.maps.GoogleMap.SnapshotReadyCallback;
+import java.util.StringTokenizer;
 
 
-public class Training extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener{
-    private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mToggle;
+public class Training extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
     String weight, year, growth, name;
     int Seconds, Minutes, MilliSeconds;
     Handler handler;
-    Intent intent;
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
     ImageButton music;
     private final int SPORT_LIST = 1;
@@ -85,7 +77,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     LocationManager locationManager;
     Context mContext;
     boolean ifmarked = false;
-    boolean iffocused = false;
     boolean ifasked = false;
     int DistanceRunSum = 0;
     double latitude1 = 0;
@@ -99,15 +90,19 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     int[] caloriiArr = new int[100];
     int[] speedArr = new int[100];
     Bundle b = new Bundle();
+    double maxlat = Double.MIN_VALUE;
+    double minlat = Double.MAX_VALUE;
+    double maxlng = Double.MIN_VALUE;
+    double minlng = Double.MAX_VALUE;
+    int tr = 0;
 
     int caloriii;
-    PolylineOptions line= new PolylineOptions().width(17).color(Color.BLUE);
+    PolylineOptions line = new PolylineOptions().width(17).color(Color.BLUE);
     private Toolbar toolbar;
     public int time = 10;
-    ImageView imageView2;
-    String format = "jpg";
-    String fileName = "FullScreenshot." + format;
-    public int i;
+
+    public Training() {
+    }
 
 
     @Override
@@ -116,13 +111,9 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         setContentView(R.layout.activity_training);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         String path = Environment.getExternalStorageDirectory().toString();
-        OutputStream fOut = null;
-        Integer counter = 0;
-        File file = new File(path, "screen"+".jpg");
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(0xFFFFFFFF);
-        //final ImageView imageView2 = (ImageView)findViewById(R.id.imageView2);
+        toolbar.setTitleTextAppearance(this, R.style.RunannexFont);
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -132,21 +123,55 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         path = Environment.getExternalStorageDirectory().getPath();
         File f = new File(path + "/.Runannex/picture.png");
         View header = navigationView.getHeaderView(0);
-        TextView textView = (TextView)header.findViewById(R.id.textView);
+        TextView textView = (TextView) header.findViewById(R.id.textView);
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         name = sPref.getString("nam", "");
         textView.setText(name);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
+
         navigationView.setNavigationItemSelectedListener(this);
-        final ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
-        if(f.exists() && !f.isDirectory()) {
+        final ImageView imageView = (ImageView) header.findViewById(R.id.imageView);
+        if (f.exists() && !f.isDirectory()) {
             imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
-        }else { imageView.setImageResource(R.drawable.ava);}
+        } else {
+            imageView.setImageResource(R.drawable.ava);
+        }
+
+        String savedString = sPref.getString("distancearr", "");
+        if (savedString != "") {
+            StringTokenizer st = new StringTokenizer(savedString, ",");
+            for (int i = 0; i < 100; i++) {
+                distanceArr[i] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        String savedString1 = sPref.getString("caloriiarr", "");
+        if (savedString1 != "") {
+            StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+            for (int i = 0; i < 100; i++) {
+                caloriiArr[i] = Integer.parseInt(st1.nextToken());
+            }
+        }
+
+        String savedString2 = sPref.getString("timearr", "");
+        if (savedString2 != "") {
+            StringTokenizer st2 = new StringTokenizer(savedString2, ",");
+            for (int i = 0; i < 100; i++) {
+                timeArr[i] = Integer.parseInt(st2.nextToken());
+            }
+        }
+
+        String savedString3 = sPref.getString("speedarr", "");
+        if (savedString3 != "") {
+            StringTokenizer st3 = new StringTokenizer(savedString3, ",");
+            for (int i = 0; i < 100; i++) {
+                speedArr[i] = Integer.parseInt(st3.nextToken());
+            }
+        }
 
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         ed = sPref.edit();
         weight = sPref.getString("weigh", "");
-        name = sPref.getString("nam", "");
         growth = sPref.getString("growt", "");
         year = sPref.getString("yea", "");
         final Button start = (Button) findViewById(R.id.start);
@@ -207,6 +232,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 Training.context = getApplicationContext();
                 mapFragment.getMapAsync(Training.this);
                 float width = 100;
+
                 float height = 560;
                 params.width = (int) convertDpToPx(context, width);
                 params.height = (int) convertDpToPx(context, height);
@@ -237,11 +263,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         });
 
 
-
-
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 start.setVisibility(View.INVISIBLE);
@@ -249,6 +274,47 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 pause.setVisibility(View.VISIBLE);
                 ifrun = true;
                 sport.setClickable(false);
+                DistanceRunSum = 1;
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        if (ActivityCompat.checkSelfPermission(Training.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Training.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        googleMap.setMyLocationEnabled(true);
+                    }
+                });
+                String savedString = sPref.getString("distancearr", "");
+                if (savedString != "") {
+                    StringTokenizer st = new StringTokenizer(savedString, ",");
+                    for (int i = 0; i < 100; i++) {
+                        distanceArr[i] = Integer.parseInt(st.nextToken());
+                    }
+                }
+
+                String savedString1 = sPref.getString("caloriiarr", "");
+                if (savedString1 != "") {
+                    StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+                    for (int i = 0; i < 100; i++) {
+                        caloriiArr[i] = Integer.parseInt(st1.nextToken());
+                    }
+                }
+
+                String savedString2 = sPref.getString("timearr", "");
+                if (savedString2 != "") {
+                    StringTokenizer st2 = new StringTokenizer(savedString2, ",");
+                    for (int i = 0; i < 100; i++) {
+                        timeArr[i] = Integer.parseInt(st2.nextToken());
+                    }
+                }
+
+                String savedString3 = sPref.getString("speedarr", "");
+                if (savedString3 != "") {
+                    StringTokenizer st3 = new StringTokenizer(savedString3, ",");
+                    for (int i = 0; i < 100; i++) {
+                        speedArr[i] = Integer.parseInt(st3.nextToken());
+                    }
+                }
             }
         };
         start.setOnClickListener(oclBtnStart);
@@ -257,8 +323,82 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         View.OnClickListener oclBtnStop = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Training.this, Result.class);
-                startActivity(intent);
+                if (ActivityCompat.checkSelfPermission(Training.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Training.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                final Location loc = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        if (ActivityCompat.checkSelfPermission(Training.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Training.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                        googleMap.setMyLocationEnabled(false);
+                        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            googleMap.addMarker(new MarkerOptions()
+                                    .anchor(0.5f, 0.5f)
+                                    .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.finishpoint)));
+
+
+                    }
+                });
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < 100; i++) {
+                    if (distanceArr[i] == 0) {
+                        distanceArr[i] = DistanceRunSum;
+                        CaptureMapScreen(i);
+                        break;
+                    }
+                }
+                for (int i = 0; i < distanceArr.length; i++) {
+                    str.append(distanceArr[i]).append(",");
+                }
+                sPref.edit().putString("distancearr", str.toString()).commit();
+
+
+                StringBuilder str1 = new StringBuilder();
+
+                for (int i = 0; i < 100; i++) {
+                    if (speedArr[i] == 0) {
+                        speedArr[i] = (int) distance123;
+                        break;
+                    }
+                }
+                for (int i = 0; i < speedArr.length; i++) {
+                    str1.append(speedArr[i]).append(",");
+                }
+
+                sPref.edit().putString("speedarr", str1.toString()).commit();
+
+                StringBuilder str2 = new StringBuilder();
+
+                for (int i = 0; i < 100; i++) {
+                    if (caloriiArr[i] == 0) {
+                        caloriiArr[i] = caloriii;
+                        break;
+                    }
+                }
+                for (int i = 0; i < caloriiArr.length; i++) {
+                    str2.append(caloriiArr[i]).append(",");
+                }
+                sPref.edit().putString("caloriiarr", str2.toString()).commit();
+
+                StringBuilder str3 = new StringBuilder();
+                for (int i = 0; i < timeArr.length; i++) {
+                    str3.append(caloriiArr[i]).append(",");
+                }
+                for (int i = 0; i < 100; i++) {
+                    if (timeArr[i] == 0) {
+                        timeArr[i] = Seconds;
+                        break;
+                    }
+                }
+                for (int i = 0; i < timeArr.length; i++) {
+                    str3.append(caloriiArr[i]).append(",");
+                }
+                sPref.edit().putString("timearr", str3.toString()).commit();
+
                 ed.putInt("Min", Minutes);
                 ed.putInt("Millis", MilliSeconds);
                 ed.putInt("Sec", Seconds);
@@ -274,9 +414,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 Seconds = 0;
                 Minutes = 0;
                 MilliSeconds = 0;
-
-
-
                 stop.setVisibility(View.INVISIBLE);
                 pause.setVisibility(View.INVISIBLE);
                 cont.setVisibility(View.INVISIBLE);
@@ -288,17 +425,28 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 ifpause = false;
                 sport.setClickable(true);
                 ifmarked = false;
-                DistanceRunSum = 0;
-                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                Handler mHandler = new Handler();
+                mHandler.postDelayed(new Runnable() {
+
                     @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        googleMap.clear();
-                        line = null;
+                    public void run() {
+                        Intent intent = new Intent(Training.this, Result.class);
+                        startActivity(intent);
+                        DistanceRunSum = 0;
+                        mapFragment.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(GoogleMap googleMap) {
+                                googleMap.clear();
+                                line = null;
+                            }
+                        });
+                        calorii.setText("0");
+                        halfV.setText("0");
+                        distance.setText("0");
                     }
-                });
-                calorii.setText("0");
-                halfV.setText("0");
-                distance.setText("0");
+
+                }, 1000L);
+
             }
         };
         stop.setOnClickListener(oclBtnStop);
@@ -329,42 +477,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
         cont.setOnClickListener(oclBtnCont);
 
     }
-    public String createImageFromBitmap(Bitmap bitmap) {
-        String fileName = "myImage";//no .png or .jpg needed
-        try {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-            FileOutputStream fo = openFileOutput(fileName, Context.MODE_PRIVATE);
-            fo.write(bytes.toByteArray());
-            // remember close file output
-            fo.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fileName = null;
-        }
-        return fileName;
-    }
-
-    private Bitmap takeScreenshot() {
-        View rootView = findViewById(android.R.id.content).getRootView();
-        //Toast.makeText(Training.this, "Success screenshot", Toast.LENGTH_LONG).show();
-        rootView.setDrawingCacheEnabled(true);
-        return rootView.getDrawingCache();
-    }
-    public void saveBitmap(Bitmap bitmap) {
-        File imagePath = new File(Environment.getExternalStorageDirectory() + "/screenshot.png");
-        FileOutputStream fos;
-        try {
-            fos = new FileOutputStream(imagePath);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            Log.e("GREC", e.getMessage(), e);
-        } catch (IOException e) {
-            Log.e("GREC", e.getMessage(), e);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -375,6 +487,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             super.onBackPressed();
         }
     }
+
     public Runnable runnable = new Runnable() {
 
         public void run() {
@@ -382,8 +495,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
             final TextView calorii = (TextView) findViewById(R.id.calorii);
             final TextView halfV = (TextView) findViewById(R.id.halfV);
             int weightnum = Integer.parseInt(weight);
-            int growthnum = Integer.parseInt(growth);
-            int Seconds1 = 0;
 
             MillisecondTime = SystemClock.uptimeMillis() - StartTime;
             UpdateTime = TimeBuff + MillisecondTime;
@@ -395,15 +506,16 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                     + String.format("%02d", Seconds) + ":"
                     + String.format("%03d", MilliSeconds));
 
-            if (ifrun && DistanceRunSum > 10 && Seconds>1 && Seconds1 != Seconds) {
-                Seconds1 = Seconds;
-                distance123 = (DistanceRunSum*3600)/(Seconds*1000);
-                halfV.setText((int)distance123 + "");
+            if (ifrun && DistanceRunSum > 10 && Seconds > 1) {
+                distance123 = (DistanceRunSum * 3600) / (Seconds * 1000);
+                halfV.setText((int) distance123 + "");
                 if (ifjogging) {
-                    caloriii = (int)(0.035*weightnum + 0.029*(distance123*distance123/growthnum)*weightnum);
-                    calorii.setText(caloriii+"");
+                    caloriii = (weightnum * DistanceRunSum / 1000);
+                    calorii.setText(caloriii + "");
                 }
-                //if (!ifjogging) {calorii.setText(caloriii);}
+                if (!ifjogging) {
+                    calorii.setText(caloriii);
+                }
             }
             handler.postDelayed(this, 0);
         }
@@ -460,7 +572,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 double lat = arg.getLatitude();
                 double lng = arg.getLongitude();
                 LatLng latlng = new LatLng(lat, lng);
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
             }
         });
     }
@@ -694,9 +806,9 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                         startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                     }
                 })
-                .setNegativeButton("Отмена", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Выйти", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
-                        dialog.cancel();
+                        finish();
                     }
                 });
         final AlertDialog alert = builder.create();
@@ -707,14 +819,11 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
     LocationListener locationListenerGPS = new LocationListener() {
         @Override
         public void onLocationChanged(final android.location.Location location) {
-            int weightnum = Integer.parseInt(weight);
-            int growthnum = Integer.parseInt(growth);
             final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
             final TextView distancer = (TextView) findViewById(R.id.distance);
-            final TextView calorii = (TextView) findViewById(R.id.calorii);
-            final TextView halfV = (TextView) findViewById(R.id.halfV);
             final double[] latitude = {location.getLatitude()};
             final double[] longitude = {location.getLongitude()};
+
             final LatLng latLng = new LatLng(latitude[0], longitude[0]);
             if (line == null) {
                 line = new PolylineOptions().width(17).color(Color.BLUE);
@@ -724,6 +833,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 loc = false;
                 latitude1 = location.getLatitude();
                 longtitude1 = location.getLongitude();
+                if (latitude1 > maxlat) maxlat = latitude1;
+                if (latitude1 < minlat) minlat = latitude1;
+                if (longtitude1 > maxlng) maxlng = longtitude1;
+                if (longtitude1 < minlng) minlng = longtitude1;
                 if (ifrun) {
                     if (latitude2 != 0) {
                         Location locationA = new Location("point A");
@@ -753,6 +866,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 loc = true;
                 latitude2 = location.getLatitude();
                 longtitude2 = location.getLongitude();
+                if (latitude2 > maxlat) maxlat = latitude2;
+                if (latitude2 < minlat) minlat = latitude2;
+                if (longtitude2 > maxlng) maxlng = longtitude2;
+                if (longtitude2 < minlng) minlng = longtitude2;
                 if (ifrun && !ifpause) {
                     if (latitude1 != 0) {
                         Location locationA = new Location("point A");
@@ -784,7 +901,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 public void onMapReady(GoogleMap googleMap) {
                     CameraPosition camPos = new CameraPosition.Builder()
                             .target(new LatLng(latitude[0], longitude[0]))
-                            .zoom(16)
+                            .zoom(15)
                             .build();
                     CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
                     googleMap.animateCamera(camUpd3);
@@ -850,7 +967,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
 
 
         }
-        /*if (id==R.id.stat){
+        if (id == R.id.stat) {
             if (ifrun) {
                 AlertDialog.Builder quitDialog = new AlertDialog.Builder(
                         Training.this);
@@ -872,16 +989,79 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback,Na
                 quitDialog.show();
 
             } else {
-                Intent i = new Intent(this, Stata.class);
-                startActivity(i);
+                Intent b = new Intent(Training.this, Stata.class);
+                startActivity(b);
+                finish();
             }
 
 
-        }*/
+        }
+        if (id == R.id.alltrain) {
+            if (ifrun) {
+                AlertDialog.Builder quitDialog = new AlertDialog.Builder(
+                        Training.this);
+                quitDialog.setTitle("Вы уверены что хотите покинуть тренировку?                                ");
+                quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent i = new Intent(Training.this, Alltrain.class);
+                        startActivity(i);
+                        finish();
+
+                    }
+                });
+                quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                quitDialog.show();
+
+            } else {
+                Intent b = new Intent(Training.this, Alltrain.class);
+                startActivity(b);
+                finish();
+            }
+
+
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
+
+    public void CaptureMapScreen(final int i) {
+        final SnapshotReadyCallback callback = new SnapshotReadyCallback() {
+            Bitmap bitmap;
+
+            @Override
+            public void onSnapshotReady(Bitmap snapshot) {
+                tr++;
+                File path = Environment.getExternalStorageDirectory();
+                bitmap = snapshot;
+                String count = i+"";
+                try {
+                    FileOutputStream out = new FileOutputStream(path + "/.Runannex/"
+                            + "Map" + count
+                            + ".png");
+
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                googleMap.snapshot(callback);
+            }
+        });
+
+    }
 }

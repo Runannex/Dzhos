@@ -2,6 +2,8 @@ package com.example.admin.runannex;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +22,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class Stata extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
@@ -28,12 +32,10 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stata);
-        setContentView(R.layout.activity_main);
-        Button button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(viewClickListener);
+        String path = Environment.getExternalStorageDirectory().toString();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setTitleTextColor(0xFFFFFFFF);
+        toolbar.setTitleTextAppearance(this, R.style.RunannexFont);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View header = navigationView.getHeaderView(0);
         TextView textView = (TextView)header.findViewById(R.id.textView);
@@ -42,8 +44,14 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         textView.setText(name);
         //textView.setTextColor(R.color.colorAccent);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
+        path = Environment.getExternalStorageDirectory().getPath();
+        File f = new File(path + "/.Runannex/picture.png");
         ImageView imageView = (ImageView)header.findViewById(R.id.imageView);
-        setSupportActionBar(toolbar);
+        if (f.exists() && !f.isDirectory()) {
+            imageView.setImageURI(Uri.parse(new File("file://" + path + "/.Runannex/picture.png").toString()));
+        } else {
+            imageView.setImageResource(R.drawable.ava);
+        }
         final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -52,57 +60,7 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    View.OnClickListener viewClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            showPopupMenu(v);
-        }
-    };
 
-    private void showPopupMenu(View v) {
-        PopupMenu popupMenu = new PopupMenu(this, v);
-        popupMenu.inflate(R.menu.popupmenu);
-        popupMenu
-                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        // Toast.makeText(PopupMenuDemoActivity.this,
-                        // item.toString(), Toast.LENGTH_LONG).show();
-                        // return true;
-                        switch (item.getItemId()) {
-
-                            case R.id.menu1:
-                                Toast.makeText(getApplicationContext(),
-                                        "Вы выбрали PopupMenu 1",
-                                        Toast.LENGTH_SHORT).show();
-                                return true;
-                            case R.id.menu2:
-                                Toast.makeText(getApplicationContext(),
-                                        "Вы выбрали PopupMenu 2",
-                                        Toast.LENGTH_SHORT).show();
-                                return true;
-                            case R.id.menu3:
-                                Toast.makeText(getApplicationContext(),
-                                        "Вы выбрали PopupMenu 3",
-                                        Toast.LENGTH_SHORT).show();
-                                return true;
-                            default:
-                                return false;
-                        }
-                    }
-                });
-
-        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
-
-            @Override
-            public void onDismiss(PopupMenu menu) {
-                Toast.makeText(getApplicationContext(), "onDismiss",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        popupMenu.show();
-    }
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
@@ -148,8 +106,16 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
 
 
         } else if (id == R.id.stat) {
+            Intent i = new Intent(this, Stata.class);
+            startActivity(i);
 
         } else if (id == R.id.alltrain) {
+            Intent i = new Intent(this, Alltrain.class);
+            startActivity(i);
+
+
+
+
 
         }
 
@@ -158,8 +124,4 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         return true;
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
 }

@@ -31,7 +31,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:testOnly="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme.NoActionBar" >
         <activity
             android:name="com.example.admin.runannex.MainActivity"
             android:screenOrientation="portrait"
@@ -54,12 +54,26 @@
             android:name="com.example.admin.runannex.Result"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.example.admin.runannex.ACH"
+            android:name="com.example.admin.runannex.Ach"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.example.admin.runannex.Stata"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <data />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity android:name="com.example.admin.runannex.Alltrain" />
+
         <meta-data
             android:name="android.support.VERSION"
             android:value="26.1.0" />
