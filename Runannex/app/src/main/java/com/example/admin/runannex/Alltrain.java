@@ -1,7 +1,10 @@
 package com.example.admin.runannex;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -13,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class Alltrain extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     List<Phone1> alltrainlay = new ArrayList<>();
@@ -35,14 +40,24 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
     SharedPreferences.Editor ed;
     String  name;
     public int d,v,c,t;
+    public int col= 0;
+    int[] distanceArr = new int[101];
+    int[]  timeArr = new int[101];
+    int[]  caloriiArr = new int[101];
+    int[]  speedArr = new int[101];
+    String[] dateArr = new String[1000];
+    public String data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alltrain);
         d=v=c=t=0;
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        View inflater  = getLayoutInflater().inflate(R.layout.layout, null);
+        @SuppressLint("ResourceType") ImageView imageMap = (ImageView) inflater.findViewById(R.drawable.ava);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.alltrainlay);
         DataAdapter1 adapter = new DataAdapter1(this, alltrainlay );
         recyclerView.setAdapter(adapter);
@@ -52,16 +67,59 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
         View header = navigationView.getHeaderView(0);
         TextView textView = (TextView)header.findViewById(R.id.textView);
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        data = sPref.getString("date", "");
         name = sPref.getString("nam", "");
         textView.setText(name);
-        //textView.setTextColor(R.color.colorAccent);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MMM HH:mm");
         String currentDateandTime = sdf.format(new Date());
+        String savedString2 = sPref.getString("timearr", "");
+        if (savedString2 != "") {
+            StringTokenizer st2 = new StringTokenizer(savedString2, ",");
+            for (int i = 0; i < 100; i++) {
+                timeArr[i] = Integer.parseInt(st2.nextToken());
+            }
+        }
+        String savedString1 = sPref.getString("caloriiarr", "");
+        if (savedString1 != "") {
+            StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+            for (int i = 0; i < 100; i++) {
+                caloriiArr[i] = Integer.parseInt(st1.nextToken());
+            }
+        }
+        String savedString3 = sPref.getString("speedarr", "");
+        if (savedString3 != "") {
+            StringTokenizer st3 = new StringTokenizer(savedString3, ",");
+            for (int i = 0; i < 100; i++) {
+                speedArr[i] = Integer.parseInt(st3.nextToken());
+            }
+        }
+        String savedString = sPref.getString("distancearr", "");
+        if (savedString != "") {
+            StringTokenizer st = new StringTokenizer(savedString, ",");
+            for (int i = 0; i < 100; i++) {
+                distanceArr[i] = Integer.parseInt(st.nextToken());
+            }
+        }
+        String savedString4 = sPref.getString("datearr", "");
+        if (savedString4 != "") {
+            StringTokenizer st4 = new StringTokenizer(savedString4, ",");
+            for (int i = 0; i < 100; i++) {
+                dateArr[i] = String.valueOf(st4.nextToken());
+            }
+        }
+        for (int i = 0; i<100; i++) {
+            col++;
+            if (distanceArr[i + 1] == 0) {
+                break;
+            }
+        }
+        for(int j = 0;j<col;j++){
 
-        alltrainlay.add(new Phone1 (currentDateandTime, R.drawable.ic_done_black_24dp, d+" м.  "+t+" мин. "+c+" кал.  "+v+" c/c "));
-        alltrainlay.add(new Phone1 (currentDateandTime, R.drawable.ic_done_black_24dp, d+" м.  "+t+" мин. "+c+" кал.  "+v+" c/c "));
-        alltrainlay.add(new Phone1 (currentDateandTime, R.drawable.ic_done_black_24dp, d+" м.  "+t+" мин. "+c+" кал.  "+v+" c/c "));
+            alltrainlay.add(new Phone1(" "+dateArr[j], imageMap, " Длительность тренировки: " + (timeArr[j] / 60) + ":" + (timeArr[j] - timeArr[j] / 60) + "\n" + " Дистанция: " + distanceArr[j] + " м.  " +"\n"+ " Cожженные калории: " + caloriiArr[j] + "\n" + " Средняя скорость: "+ speedArr[j] + " м/c " ));
+
+        }
+        //alltrainlay.add(new Phone1 (col, R.drawable.ic_done_black_24dp, d+" м.  "+t+" мин. "+c+" кал.  "+v+" c/c "));
 
         path = Environment.getExternalStorageDirectory().getPath();
         File f = new File(path + "/.Runannex/picture.png");
@@ -77,6 +135,20 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    public Bitmap getImageFromSdCard(int imageNumb) {
+        Bitmap bitmap = null;
+        File path = Environment.getExternalStorageDirectory();
+        int count = imageNumb++;
+        try {
+            bitmap = BitmapFactory.decodeFile(path + "/.Runannex/"
+                    + "Map" + count
+                    + ".png");
+        } catch (IllegalArgumentException e) {
+            Log.e("Fucking error", "");
+        }
+        return bitmap;
+
     }
 
 
@@ -104,7 +176,7 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
             case R.id.info:
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setMessage("\nДанное приложение позволяет поддерживать вашу физическую форму.\nГлавная его задача: отслеживание маршрута вашего бега по карте, вычисление средней скорости, времени, количество потраченных калорий и преодоленную дистанцию, также можно бег заменить ездой на велосипеде.\nЕсли вы часто занимаетесь пробежкой, вам не стоит обходить это приложение стороной.");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
                 builder.show();

@@ -119,7 +119,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.100000024" />
+            app:layout_constraintVertical_bias="0.096" />
 
         <TextView
             android:id="@+id/time"
@@ -141,15 +141,15 @@
 
         <Button
             android:id="@+id/Bmap"
-            android:layout_width="match_parent"
-            android:layout_height="306dp"
+            android:layout_width="319dp"
+            android:layout_height="274dp"
             android:background="@null"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.945" />
 
         <fragment
             android:id="@+id/map"

@@ -788,12 +788,12 @@
         "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\mediarouter-v7-26.1.0.aar\\5f257802ab56dcd7743a6f56ba3849f5\\res\\drawable-xhdpi-v4\\ic_mr_button_connected_01_light.png"
     },
     {
-        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_popup_background_mtrl_mult.9.png.flat",
-        "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\1ef8ef95b07664aa00f9253f8bceb773\\res\\drawable-mdpi-v4\\abc_popup_background_mtrl_mult.9.png"
-    },
-    {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\layout_layout.xml.flat",
         "source": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\src\\main\\res\\layout\\layout.xml"
+    },
+    {
+        "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_abc_popup_background_mtrl_mult.9.png.flat",
+        "source": "C:\\Users\\alexa\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-26.1.0.aar\\1ef8ef95b07664aa00f9253f8bceb773\\res\\drawable-mdpi-v4\\abc_popup_background_mtrl_mult.9.png"
     },
     {
         "merged": "C:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\res\\merged\\debug\\color_abc_primary_text_material_dark.xml.flat",

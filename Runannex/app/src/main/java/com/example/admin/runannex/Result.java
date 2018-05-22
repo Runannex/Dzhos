@@ -29,6 +29,11 @@ public class Result extends AppCompatActivity {
     float speed;
     private Toolbar toolbar;
     int[] distanceArr = new int[100];
+    int[]  timeArr = new int[101];
+    int[]  caloriiArr = new int[101];
+    int[]  speedArr = new int[101];
+    String[] dateArr = new String[1000];
+    public String data;
 
 
 
@@ -47,11 +52,40 @@ public class Result extends AppCompatActivity {
         final TextView distancer = (TextView) findViewById(R.id.distance);
         final ImageView screen = (ImageView) findViewById(R.id.screen);
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        String savedString2 = sPref.getString("timearr", "");
+        if (savedString2 != "") {
+            StringTokenizer st2 = new StringTokenizer(savedString2, ",");
+            for (int i = 0; i < 100; i++) {
+                timeArr[i] = Integer.parseInt(st2.nextToken());
+            }
+        }
+
+        String savedString3 = sPref.getString("speedarr", "");
+        if (savedString3 != "") {
+            StringTokenizer st3 = new StringTokenizer(savedString3, ",");
+            for (int i = 0; i < 100; i++) {
+                speedArr[i] = Integer.parseInt(st3.nextToken());
+            }
+        }
         String savedString = sPref.getString("distancearr", "");
         if (savedString != "") {
             StringTokenizer st = new StringTokenizer(savedString, ",");
             for (int i = 0; i < 100; i++) {
                 distanceArr[i] = Integer.parseInt(st.nextToken());
+            }
+        }
+        String savedString4 = sPref.getString("datearr", "");
+        if (savedString4 != "") {
+            StringTokenizer st4 = new StringTokenizer(savedString4, ",");
+            for (int i = 0; i < 100; i++) {
+                dateArr[i] = String.valueOf(st4.nextToken());
+            }
+        }
+        String savedString1 = sPref.getString("caloriiarr", "");
+        if (savedString1 != "") {
+            StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+            for (int i = 0; i < 100; i++) {
+                caloriiArr[i] = Integer.parseInt(st1.nextToken());
             }
         }
         for (i = 0; i<100; i++) {

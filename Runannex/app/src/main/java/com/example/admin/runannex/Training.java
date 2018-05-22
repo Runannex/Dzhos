@@ -56,6 +56,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.StringTokenizer;
 
 
@@ -94,7 +98,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
     double minlat = Double.MAX_VALUE;
     double maxlng = Double.MIN_VALUE;
     double minlng = Double.MAX_VALUE;
+    String date;
+    String[] dateArr = new String[100];
     int tr = 0;
+    int a = 0;
 
     int caloriii;
     PolylineOptions line = new PolylineOptions().width(17).color(Color.BLUE);
@@ -166,6 +173,13 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
             StringTokenizer st3 = new StringTokenizer(savedString3, ",");
             for (int i = 0; i < 100; i++) {
                 speedArr[i] = Integer.parseInt(st3.nextToken());
+            }
+        }
+        String savedString4 = sPref.getString("datearr", "");
+        if (savedString4 != "") {
+            StringTokenizer st4 = new StringTokenizer(savedString4, ",");
+            for (int i = 0; i < 100; i++) {
+                dateArr[i] = String.valueOf(st4.nextToken());
             }
         }
 
@@ -266,7 +280,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Date now = new Date();
+                date=DateFormat.getDateTimeInstance().format(now);
+                dateArr[a]=date;
+                a++;
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 start.setVisibility(View.INVISIBLE);
@@ -284,22 +301,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                         googleMap.setMyLocationEnabled(true);
                     }
                 });
-                String savedString = sPref.getString("distancearr", "");
-                if (savedString != "") {
-                    StringTokenizer st = new StringTokenizer(savedString, ",");
-                    for (int i = 0; i < 100; i++) {
-                        distanceArr[i] = Integer.parseInt(st.nextToken());
-                    }
-                }
-
-                String savedString1 = sPref.getString("caloriiarr", "");
-                if (savedString1 != "") {
-                    StringTokenizer st1 = new StringTokenizer(savedString1, ",");
-                    for (int i = 0; i < 100; i++) {
-                        caloriiArr[i] = Integer.parseInt(st1.nextToken());
-                    }
-                }
-
                 String savedString2 = sPref.getString("timearr", "");
                 if (savedString2 != "") {
                     StringTokenizer st2 = new StringTokenizer(savedString2, ",");
@@ -307,12 +308,32 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                         timeArr[i] = Integer.parseInt(st2.nextToken());
                     }
                 }
-
+                String savedString1 = sPref.getString("caloriiarr", "");
+                if (savedString1 != "") {
+                    StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+                    for (int i = 0; i < 100; i++) {
+                        caloriiArr[i] = Integer.parseInt(st1.nextToken());
+                    }
+                }
                 String savedString3 = sPref.getString("speedarr", "");
                 if (savedString3 != "") {
                     StringTokenizer st3 = new StringTokenizer(savedString3, ",");
                     for (int i = 0; i < 100; i++) {
                         speedArr[i] = Integer.parseInt(st3.nextToken());
+                    }
+                }
+                String savedString = sPref.getString("distancearr", "");
+                if (savedString != "") {
+                    StringTokenizer st = new StringTokenizer(savedString, ",");
+                    for (int i = 0; i < 100; i++) {
+                        distanceArr[i] = Integer.parseInt(st.nextToken());
+                    }
+                }
+                String savedString4 = sPref.getString("datearr", "");
+                if (savedString4 != "") {
+                    StringTokenizer st4 = new StringTokenizer(savedString4, ",");
+                    for (int i = 0; i < 100; i++) {
+                        dateArr[i] = String.valueOf(st4.nextToken());
                     }
                 }
             }
@@ -339,6 +360,12 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                                     .anchor(0.5f, 0.5f)
                                     .position(new LatLng(loc.getLatitude(), loc.getLongitude()))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.finishpoint)));
+                                                   CameraPosition camPos = new CameraPosition.Builder()
+                                                               .target(new LatLng(((maxlat + minlat)/2), ((maxlng + minlng)/2)))
+                                                               .zoom(15)
+                                                             .build();
+                                                CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
+                                              googleMap.moveCamera(camUpd3);
 
 
                     }
@@ -348,9 +375,11 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                     if (distanceArr[i] == 0) {
                         distanceArr[i] = DistanceRunSum;
                         CaptureMapScreen(i);
+
                         break;
                     }
                 }
+
                 for (int i = 0; i < distanceArr.length; i++) {
                     str.append(distanceArr[i]).append(",");
                 }
@@ -399,6 +428,13 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                 }
                 sPref.edit().putString("timearr", str3.toString()).commit();
 
+
+                StringBuilder str4 = new StringBuilder();
+                for (int i = 0; i < 100; i++) {
+                    str4.append(dateArr[i]).append(",");
+                }
+                sPref.edit().putString("datearr", str4.toString()).commit();
+
                 ed.putInt("Min", Minutes);
                 ed.putInt("Millis", MilliSeconds);
                 ed.putInt("Sec", Seconds);
@@ -440,6 +476,10 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                                 line = null;
                             }
                         });
+                        maxlat = Double.MIN_VALUE;
+                        minlat = Double.MAX_VALUE;
+                        maxlng = Double.MIN_VALUE;
+                        minlng = Double.MAX_VALUE;
                         calorii.setText("0");
                         halfV.setText("0");
                         distance.setText("0");
@@ -507,7 +547,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                     + String.format("%03d", MilliSeconds));
 
             if (ifrun && DistanceRunSum > 10 && Seconds > 1) {
-                distance123 = (DistanceRunSum * 3600) / (Seconds * 1000);
+                distance123 = (DistanceRunSum * 3600) / ((int) (UpdateTime / 1000) * 1000);
                 halfV.setText((int) distance123 + "");
                 if (ifjogging) {
                     caloriii = (weightnum * DistanceRunSum / 1000);
