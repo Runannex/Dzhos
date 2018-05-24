@@ -53,6 +53,7 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
     int[]  speedArr = new int[101];
     String[] dateArr = new String[1000];
     public String data;
+    int coli;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
         data = sPref.getString("date", "");
         name = sPref.getString("nam", "");
         textView.setText(name);
+        coli = sPref.getInt("colich",0);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MMM HH:mm");
         String currentDateandTime = sdf.format(new Date());

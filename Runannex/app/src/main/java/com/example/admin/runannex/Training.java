@@ -108,6 +108,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
     PolylineOptions line = new PolylineOptions().width(17).color(Color.BLUE);
     private Toolbar toolbar;
     public int time = 10;
+    int coli = 0;
 
     public Training() {
     }
@@ -276,14 +277,15 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                 }
             }
         });
-
-
         View.OnClickListener oclBtnStart = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Date now = new Date();
                 date=DateFormat.getDateTimeInstance().format(now);
                 StartTime = SystemClock.uptimeMillis();
+                coli++;
+                ed.putInt("colich",coli);
+                ed.commit();
                 handler.postDelayed(runnable, 0);
                 start.setVisibility(View.INVISIBLE);
                 stop.setVisibility(View.VISIBLE);
@@ -434,7 +436,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                         SimpleDateFormat sdf = new SimpleDateFormat("d/MM HH:mm");
                         String currentDateandTime = sdf.format(new Date());
                         dateArr[i] = currentDateandTime;
-                        Toast.makeText(Training.this, ""+dateArr[i], Toast.LENGTH_SHORT).show();
                         break;
                     }
                 }
@@ -654,7 +655,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
             case R.id.info:
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setMessage("\nДанное приложение позволяет поддерживать вашу физическую форму.\nГлавная его задача: отслеживание маршрута вашего бега по карте, вычисление средней скорости, времени, количество потраченных калорий и преодоленную дистанцию, также можно бег заменить ездой на велосипеде.\nЕсли вы часто занимаетесь пробежкой, вам не стоит обходить это приложение стороной.");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
 
@@ -1055,33 +1056,37 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
 
         }
         if (id == R.id.alltrain) {
-            if (ifrun) {
-                AlertDialog.Builder quitDialog = new AlertDialog.Builder(
-                        Training.this);
-                quitDialog.setTitle("Вы уверены что хотите покинуть тренировку?                                ");
-                quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(Training.this, Alltrain.class);
-                        startActivity(i);
-                        finish();
-
-                    }
-                });
-                quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                quitDialog.show();
-
+            if (coli == 0) {
+                Toast.makeText(Training.this, "Выполните хотя бы 1 тренировку", Toast.LENGTH_SHORT).show();
             } else {
-                Intent b = new Intent(Training.this, Alltrain.class);
-                startActivity(b);
-                finish();
+                if (ifrun) {
+                    AlertDialog.Builder quitDialog = new AlertDialog.Builder(
+                            Training.this);
+                    quitDialog.setTitle("Вы уверены что хотите покинуть тренировку?                                ");
+                    quitDialog.setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent i = new Intent(Training.this, Alltrain.class);
+                            startActivity(i);
+                            finish();
+
+                        }
+                    });
+                    quitDialog.setNegativeButton("Нет", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    quitDialog.show();
+
+                } else {
+                    Intent b = new Intent(Training.this, Alltrain.class);
+                    startActivity(b);
+                    finish();
+                }
+
+
             }
-
-
         }
 
 

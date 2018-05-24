@@ -139,7 +139,7 @@ public class Result extends AppCompatActivity {
             case R.id.info:
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setMessage("\nДанное приложение позволяет поддерживать вашу физическую форму.\nГлавная его задача: отслеживание маршрута вашего бега по карте, вычисление средней скорости, времени, количество потраченных калорий и преодоленную дистанцию, также можно бег заменить ездой на велосипеде.\nЕсли вы часто занимаетесь пробежкой, вам не стоит обходить это приложение стороной.");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
 

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 toolbar = (Toolbar)findViewById(R.id.toolbar);
                 setSupportActionBar(toolbar);
-        toolbar.setTitleTextAppearance(this, R.style.RunannexFont);
+                toolbar.setTitleTextAppearance(this, R.style.RunannexFont);
                 sPref = getApplicationContext().getSharedPreferences("Data", MODE_PRIVATE);
                 ed = sPref.edit();
                 if (sPref.getBoolean("firstrun", true)) {

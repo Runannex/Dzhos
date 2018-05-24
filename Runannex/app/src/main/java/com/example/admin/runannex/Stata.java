@@ -33,7 +33,7 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
     int[] distanceArr = new int[101];
     int[]  timeArr = new int[101];
     int[]  caloriiArr = new int[101];
-
+    int coli;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +103,7 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         distance.setText("Пройденная дистанция: "+d+"м.");
         time.setText("Время тренировок: "+(int)(k/60)+":" +(k-(int)k/60));
         count.setText("Количество тренировок: "+col);
+        coli = sPref.getInt("colich",0);
     }
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -128,7 +129,7 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
             case R.id.info:
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setMessage("\nДанное приложение позволяет поддерживать вашу физическую форму.\nГлавная его задача: отслеживание маршрута вашего бега по карте, вычисление средней скорости, времени, количество потраченных калорий и преодоленную дистанцию, также можно бег заменить ездой на велосипеде.\nЕсли вы часто занимаетесь пробежкой, вам не стоит обходить это приложение стороной.");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
                 builder.show();
@@ -153,15 +154,16 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
             startActivity(i);
 
         } else if (id == R.id.alltrain) {
-            Intent i = new Intent(this, Alltrain.class);
-            startActivity(i);
-
-
-
+            if(coli==0){
+                Toast.makeText(Stata.this, "Выполните хотя бы 1 тренировку", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Intent i = new Intent(this, Alltrain.class);
+                startActivity(i);
+            }
 
 
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

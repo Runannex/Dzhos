@@ -39,6 +39,7 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
     int[] timeArr = new int[100];
     int[] caloriiArr = new int[100];
     int[] speedArr = new int[100];
+    int coli;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +52,10 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
         TextView textView = (TextView)header.findViewById(R.id.textView);
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         name = sPref.getString("nam", "");
+        sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
+        ed = sPref.edit();
         textView.setText(name);
+        coli = sPref.getInt("colich",0);
         String savedString = sPref.getString("distancearr", "");
         if (savedString != "") {
             StringTokenizer st = new StringTokenizer(savedString, ",");
@@ -103,25 +107,25 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
         }
         final TextView selection = (TextView) findViewById(R.id.selection);
         //dis = extras.getInt("time");
-        if(dis>1){
+        if(dis>1000){
             ach.add(new Phone ("Пробежать 1 км", R.drawable.ic_done_black_24dp));
             a++;}
             else {
                 ach.add(new Phone ("Пробежать 1 км", R.drawable.ic_clear_black_24dp));
             }
-        if(dis>5){
+        if(dis>5000){
             ach.add(new Phone ("Пробежать 5 км", R.drawable.ic_done_black_24dp));
             a++;}
             else{
                 ach.add(new Phone ("Пробежать 5 км", R.drawable.ic_clear_black_24dp));
             }
-        if(dis>10){
+        if(dis>1000){
             ach.add(new Phone ("Пробежать 10 км", R.drawable.ic_done_black_24dp));
             a++;}
             else{
             ach.add(new Phone ("Пробежать 10 км", R.drawable.ic_clear_black_24dp));
         }
-        if(dis>20){
+        if(dis>20000){
             ach.add(new Phone ("Пробежать 20 км", R.drawable.ic_done_black_24dp));
             a++;}
             else{
@@ -235,7 +239,7 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
             case R.id.info:
                 android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
                 builder.setTitle("О приложении");
-                builder.setMessage("Lorem ipsum dolor ....");
+                builder.setMessage("\nДанное приложение позволяет поддерживать вашу физическую форму.\nГлавная его задача: отслеживание маршрута вашего бега по карте, вычисление средней скорости, времени, количество потраченных калорий и преодоленную дистанцию, также можно бег заменить ездой на велосипеде.\nЕсли вы часто занимаетесь пробежкой, вам не стоит обходить это приложение стороной.");
                 builder.setPositiveButton("OK", null);
                 builder.setIcon(R.drawable.ic_launcher);
                 builder.show();
@@ -258,8 +262,13 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
 
 
         } else if (id == R.id.alltrain) {
-            Intent i = new Intent(this, Alltrain.class);
-            startActivity(i);
+            if(coli==0){
+                Toast.makeText(Ach.this, "Выполните хотя бы 1 тренировку", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Intent i = new Intent(this, Alltrain.class);
+                startActivity(i);
+            }
 
         }
 
