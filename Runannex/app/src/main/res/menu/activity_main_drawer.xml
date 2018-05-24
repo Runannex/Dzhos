@@ -20,6 +20,10 @@
             android:id="@+id/alltrain"
             android:title="Все тренировки"
             android:icon="@drawable/alltrain"/>
+        <item
+            android:id="@+id/fitness"
+            android:icon="@drawable/mr_button_connected_light"
+            android:title="Добавить устройство" />
     </group>
 
 </menu>

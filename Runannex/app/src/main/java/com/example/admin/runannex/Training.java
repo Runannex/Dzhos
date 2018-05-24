@@ -30,6 +30,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -96,13 +97,13 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
     Bundle b = new Bundle();
     double maxlat = Double.MIN_VALUE;
     double minlat = Double.MAX_VALUE;
+    boolean focused = false;
     double maxlng = Double.MIN_VALUE;
     double minlng = Double.MAX_VALUE;
     String date;
     String[] dateArr = new String[100];
     int tr = 0;
     int a = 0;
-
     int caloriii;
     PolylineOptions line = new PolylineOptions().width(17).color(Color.BLUE);
     private Toolbar toolbar;
@@ -282,8 +283,6 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
             public void onClick(View v) {
                 Date now = new Date();
                 date=DateFormat.getDateTimeInstance().format(now);
-                dateArr[a]=date;
-                a++;
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
                 start.setVisibility(View.INVISIBLE);
@@ -414,21 +413,31 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                 sPref.edit().putString("caloriiarr", str2.toString()).commit();
 
                 StringBuilder str3 = new StringBuilder();
-                for (int i = 0; i < timeArr.length; i++) {
-                    str3.append(caloriiArr[i]).append(",");
-                }
+
+
                 for (int i = 0; i < 100; i++) {
                     if (timeArr[i] == 0) {
                         timeArr[i] = Seconds;
+
                         break;
                     }
                 }
-                for (int i = 0; i < timeArr.length; i++) {
-                    str3.append(caloriiArr[i]).append(",");
+                for (int i = 0; i < 100; i++) {
+                    str3.append(timeArr[i]).append(",");
                 }
+
                 sPref.edit().putString("timearr", str3.toString()).commit();
 
 
+                for (int i = 0; i < 100; i++) {
+                    if (dateArr[i] == null) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("d/MM HH:mm");
+                        String currentDateandTime = sdf.format(new Date());
+                        dateArr[i] = currentDateandTime;
+                        Toast.makeText(Training.this, ""+dateArr[i], Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                }
                 StringBuilder str4 = new StringBuilder();
                 for (int i = 0; i < 100; i++) {
                     str4.append(dateArr[i]).append(",");
@@ -612,7 +621,15 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                 double lat = arg.getLatitude();
                 double lng = arg.getLongitude();
                 LatLng latlng = new LatLng(lat, lng);
+                if (!focused) {
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
+                    focused = true;
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
     }
@@ -945,6 +962,7 @@ public class Training extends AppCompatActivity implements OnMapReadyCallback, N
                             .build();
                     CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
                     googleMap.animateCamera(camUpd3);
+
                     if (!ifmarked && ifrun) {
                         googleMap.addMarker(new MarkerOptions()
                                 .anchor(0.5f, 0.5f)

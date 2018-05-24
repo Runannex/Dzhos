@@ -38,7 +38,7 @@ class DataAdapter1 extends Adapter<DataAdapter1.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Phone1 phone1 = phones1.get(position);
-        holder.imageView.setImageBitmap(getImageFromSdCard(i));
+        holder.imageView.setImageBitmap(getImageFromSdCard(position));
         holder.nameView2.setText(phone1.getDate());
         holder.nameView1.setText(phone1.getInfo());
 
@@ -46,7 +46,7 @@ class DataAdapter1 extends Adapter<DataAdapter1.ViewHolder> {
     public Bitmap getImageFromSdCard(int imageNumb) {
         Bitmap bitmap = null;
         File path = Environment.getExternalStorageDirectory();
-        int count = imageNumb+1;
+        String count = imageNumb+"";
         try {
             bitmap = BitmapFactory.decodeFile(path + "/.Runannex/"
                     + "Map" + count

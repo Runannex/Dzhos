@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -271,4 +272,10 @@ public class Ach extends AppCompatActivity implements NavigationView.OnNavigatio
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        finish();
+        return true;
+    }
+
 }

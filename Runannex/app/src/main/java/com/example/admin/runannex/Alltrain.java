@@ -18,12 +18,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.SupportMapFragment;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -73,6 +79,7 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MMM HH:mm");
         String currentDateandTime = sdf.format(new Date());
+
         String savedString2 = sPref.getString("timearr", "");
         if (savedString2 != "") {
             StringTokenizer st2 = new StringTokenizer(savedString2, ",");
@@ -116,7 +123,7 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
         }
         for(int j = 0;j<col;j++){
 
-            alltrainlay.add(new Phone1(" "+dateArr[j], imageMap, " Длительность тренировки: " + (timeArr[j] / 60) + ":" + (timeArr[j] - timeArr[j] / 60) + "\n" + " Дистанция: " + distanceArr[j] + " м.  " +"\n"+ " Cожженные калории: " + caloriiArr[j] + "\n" + " Средняя скорость: "+ speedArr[j] + " м/c " ));
+            alltrainlay.add(new Phone1(" "+dateArr[j], imageMap, " Длительность тренировки: " + (int)(timeArr[j]/60)+":" +(timeArr[j]-(int)(timeArr[j]/60)) + "\n" + " Дистанция: " + distanceArr[j] + " м.  " +"\n"+ " Cожжённые калории: " + caloriiArr[j] + "\n" + " Средняя скорость: "+ speedArr[j] + " км/ч " ));
 
         }
         //alltrainlay.add(new Phone1 (col, R.drawable.ic_done_black_24dp, d+" м.  "+t+" мин. "+c+" кал.  "+v+" c/c "));
@@ -214,4 +221,11 @@ public class Alltrain extends AppCompatActivity implements NavigationView.OnNavi
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        finish();
+        return true;
+    }
+
 }

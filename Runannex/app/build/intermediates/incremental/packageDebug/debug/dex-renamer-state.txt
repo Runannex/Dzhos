@@ -1,4 +1,4 @@
-#Tue May 22 21:50:54 EEST 2018
+#Wed May 23 21:11:35 EEST 2018
 base.0=C\:\\Users\\alexa\\Desktop\\Ivanko\\Runannex\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.0=classes.dex
 renamed.0=classes.dex

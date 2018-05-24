@@ -23,11 +23,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.StringTokenizer;
 
 public class Stata extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
     SharedPreferences sPref;
     SharedPreferences.Editor ed;
     String  name;
+    public int col,t,d,k= 0;
+    int[] distanceArr = new int[101];
+    int[]  timeArr = new int[101];
+    int[]  caloriiArr = new int[101];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +48,6 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         sPref = getApplication().getSharedPreferences("Data", MODE_PRIVATE);
         name = sPref.getString("nam", "");
         textView.setText(name);
-        //textView.setTextColor(R.color.colorAccent);
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
         path = Environment.getExternalStorageDirectory().getPath();
         File f = new File(path + "/.Runannex/picture.png");
@@ -58,9 +63,47 @@ public class Stata extends AppCompatActivity implements NavigationView.OnNavigat
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+        TextView caloric = (TextView)findViewById(R.id.caloric);
+        TextView count = (TextView)findViewById(R.id.count);
+        TextView distance = (TextView)findViewById(R.id.distance);
+        TextView time = (TextView)findViewById(R.id.time);
+        String savedString2 = sPref.getString("timearr", "");
+        if (savedString2 != "") {
+            StringTokenizer st2 = new StringTokenizer(savedString2, ",");
+            for (int i = 0; i < 100; i++) {
+                timeArr[i] = Integer.parseInt(st2.nextToken());
+            }
+        }
+        String savedString1 = sPref.getString("caloriiarr", "");
+        if (savedString1 != "") {
+            StringTokenizer st1 = new StringTokenizer(savedString1, ",");
+            for (int i = 0; i < 100; i++) {
+                caloriiArr[i] = Integer.parseInt(st1.nextToken());
+            }
+        }
+        String savedString = sPref.getString("distancearr", "");
+        if (savedString != "") {
+            StringTokenizer st = new StringTokenizer(savedString, ",");
+            for (int i = 0; i < 100; i++) {
+                distanceArr[i] = Integer.parseInt(st.nextToken());
+            }
+        }
+        for (int i = 0; i<100; i++) {
+            col++;
+            if (distanceArr[i + 1] == 0) {
+                break;
+            }
+        }
+        for(int j = 0;j<col;j++) {
+            t=+timeArr[j];
+            d=+distanceArr[j];
+            k+=caloriiArr[j];
+        }
+        caloric.setText("Сожжённые калории: "+k);
+        distance.setText("Пройденная дистанция: "+d+"м.");
+        time.setText("Время тренировок: "+(int)(k/60)+":" +(k-(int)k/60));
+        count.setText("Количество тренировок: "+col);
     }
-
-
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
